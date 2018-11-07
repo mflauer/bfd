@@ -40,6 +40,9 @@ $(function() {
                 console.log("Switching pages");
                 window.location.href = "columns.html";
             },
+            error: function(error) {
+                console.log(error)
+            }
         });
     });
 });

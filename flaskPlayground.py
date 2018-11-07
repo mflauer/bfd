@@ -18,7 +18,8 @@ def worker():
     with open("received_file.csv", "wb") as write_f:
         first = True
         second = False
-        for line in f:
+        lines = f.readlines()
+        for line in lines:
             if first:
                 headers = line.decode().strip().split(",")
                 first = False
