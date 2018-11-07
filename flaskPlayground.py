@@ -1,8 +1,11 @@
 from flask import Flask, request, redirect
 from flask_cors import CORS
 import json
+from makedb import make_db_for_user
 app = Flask(__name__)
 CORS(app)
+
+current_file_name = "received_file.csv"
 
 
 @app.route("/run", methods=['POST'])
@@ -10,12 +13,12 @@ def output():
     return "Hello Michelle!"
 
 
-@app.route('/receiver', methods=['POST'])
-def worker():
+@app.route('/file_receiver', methods=['POST'])
+def file_parser():
     f = request.files['file']
     headers = None
     isNumeric = []
-    with open("received_file.csv", "wb") as write_f:
+    with open(current_file_name, "wb") as write_f:
         first = True
         second = False
         lines = f.readlines()
@@ -35,6 +38,25 @@ def worker():
             write_f.write(line)
     response = json.dumps([headers, isNumeric])
     return response
+
+
+@app.route("/parameter_receiver", methods=['POST'])
+def receive_parameters_and_make_DB():
+    form_data = request.form
+    parameter_dic = {}
+    for key in form_data:
+        value_list = form_data.getlist(key)
+        value_list[0] = set(value_list[0].strip().split(", ")) if value_list[0] != "" else None
+        value_list[1] = int(value_list[1]) if value_list[1] != "" else None
+        value_list[2] = int(value_list[2]) if value_list[2] != "" else None
+        parameter_dic[key[:-2]] = value_list
+
+    result = make_db_for_user(current_file_name, parameter_dic, "received")
+    if result:
+        return "Parameters received, bfd built"
+    else:
+        return "Parameters received, no rows matched specifications, no bfd created"
+
 
 def is_number(s):
     try:

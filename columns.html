@@ -73,9 +73,9 @@ function populateColumnTable(colLabels, isNumerics) {
                 <input id="${colLabel}-search" type="text">
               </td>
               <td class="${isNumeric ? "" : "faded"}">
-                between
+                Greater than
                 <input id="${colLabel}-lb" class="range-bound-box" type="text" ${isNumeric ? "" : "disabled"}>
-                and
+                Less than
                 <input id="${colLabel}-ub" class="range-bound-box" type="text" ${isNumeric ? "" : "disabled"}>
               </td>
             </tr>`
@@ -85,6 +85,7 @@ function populateColumnTable(colLabels, isNumerics) {
 }
 
 $( '#done-col-select' ).click(function(event) {
+    var to_send = {};
     $('[id$=-row] input:checked').each(function() { //for each checked function
         var colLabel = $(this).attr('name');
         
@@ -92,12 +93,12 @@ $( '#done-col-select' ).click(function(event) {
         var ub = $( '#' + colLabel + '-ub' ).val()
 
         var search = $( '#' + colLabel + '-search' ).val()
-        //TODO format and send to server!
+        to_send[colLabel] = [search, lb, ub]
     });
     
     $.ajax({
-            url: 'http://localhost:5000/receiver',
-            data: {"make": "Honda"},
+            url: 'http://localhost:5000/parameter_receiver',
+            data: to_send,
             type: 'POST',
             success: function(response) {
                 console.log(response);
@@ -106,8 +107,6 @@ $( '#done-col-select' ).click(function(event) {
                 console.log(error);
             }
         });
-    console.log("POST")
-
 })
 
 

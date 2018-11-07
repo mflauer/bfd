@@ -28,7 +28,7 @@ $(function() {
         var form_data = new FormData($('#upload-file')[0]);
         $.ajax({
             type: 'POST',
-            url: "http://localhost:5000/receiver",
+            url: "http://localhost:5000/file_receiver",
             data: form_data,
             contentType: false,
             cache: false,
