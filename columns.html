@@ -35,11 +35,28 @@
 <script>
 
 $(document).ready(function(){
-    console.log(document.cookie);
-    setup = JSON.parse(document.cookie);
+    setup = JSON.parse(getCookie("colData"));
+    console.log(setup)
     populateColumnTable(setup[0], setup[1])
     // populateColumnTable(['A','B','C'], [true, false, true])
 });
+
+// from w3 https://www.w3schools.com/js/js_cookies.asp
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 
 // server will spit back a list of all (column label, datatype) pairs
 function populateColumnTable(colLabels, isNumerics) {
