@@ -1,0 +1,98 @@
+<html>
+<head>
+  <title>bfd column specifications</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat|Oswald|Playfair+Display|Nunito:300" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    .range-bound-box{width:40px;}
+    .faded{opacity:.2;}
+  </style>
+</head>
+<body>
+    <div class="card">
+      <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Column Specifications</h3>
+      <div class="card-body">
+        <div id="table" class="table-editable">
+          <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-success"><i class="fa fa-plus fa-2x"
+                aria-hidden="true"></i></a></span>
+          <table id="all-col-table" class="table table-bordered table-responsive-md table-striped text-center">
+            <tr>
+              <th class="text-center">Column Name</th>
+              <th class="text-center">Include data from this column?</th>
+              <th class="text-center">Specific searches<p>(e.x. The Godfather, Meryl Strep)</p></th>
+              <th class="text-center">Range <p>(for numeric values)</p></th>
+            </tr>
+            <!-- dynamically generated rows will go here -->
+          </table>
+        </div>
+      </div>
+    </div>
+    <button id="done-col-select">Done</button>
+<script>
+
+$(document).ready(function(){
+  populateColumnTable(['A','B','C'], [true, false, true])
+});
+
+// server will spit back a list of all (column label, datatype) pairs
+function populateColumnTable(colLabels, isNumerics) {
+  $.each(colLabels, colIndex => {
+    var colLabel = colLabels[colIndex]
+    var isNumeric = isNumerics[colIndex]
+
+    var row = `<tr id="${colLabel}-row">
+              <td>${colLabel}</td>
+              <td>
+                <input id="${colLabel}-check" name="${colLabel}" type="checkbox">
+              </td>
+              <td>
+                <input id="${colLabel}-search" type="text">
+              </td>
+              <td class="${isNumeric ? "faded" : ""}">
+                between
+                <input id="${colLabel}-lb" class="range-bound-box" type="text" ${isNumeric ? "disabled" : ""}>
+                and
+                <input id="${colLabel}-ub" class="range-bound-box" type="text" ${isNumeric ? "disabled" : ""}>
+              </td>
+            </tr>`
+
+    $("#all-col-table").append(row)
+  })
+}
+
+$( '#done-col-select' ).click(function(event) {
+    $('[id$=-row] input:checked').each(function() { //for each checked function
+        var colLabel = $(this).attr('name');
+        
+        var lb = $( '#' + colLabel + '-lb' ).val()
+        var ub = $( '#' + colLabel + '-ub' ).val()
+
+        var search = $( '#' + colLabel + '-search' ).val()
+        //TODO format and send to server!
+    });
+    
+    $.ajax({
+            url: 'http://localhost:5000/receiver',
+            data: {"make": "Honda"},
+            type: 'POST',
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    console.log("POST")
+
+})
+
+
+
+</script>
+
+</body>
+</html>

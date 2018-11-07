@@ -2,3 +2,4 @@
 movie_metadata.csv
 .idea
 test.db
+__pycache__/

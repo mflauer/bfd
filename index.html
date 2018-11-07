@@ -18,56 +18,5 @@
         <input type = "file" name = "file" />
         <input type = "submit"/>
     </form>
-    <div>
-        <ul id="all-col-labels">
-            All Column Labels
-        </ul>
-        <button id="done-col-select">Done</button>
-    </div>
-    
-<script>
-$(document).ready(function(){
-  displayAllColumnLabels(['A','B','C'])
-
-});
-
-// display checkboxes for each of the given colLabels
-function displayAllColumnLabels(colLabels) {
-    $.each(colLabels, colIndex => {
-        var colLabel = colLabels[colIndex]
-        $('<li />', {
-            id: 'col-li-' + colLabel
-        }).appendTo("#all-col-labels"); 
-
-        $('<input />', {
-            type : 'checkbox',
-            id: 'box-' + colLabel,
-            name: colLabel
-        }).appendTo("#col-li-" + colLabel)
-
-        $('<label />', {
-            text: colLabel
-        }).appendTo("#col-li-" + colLabel)
-        
-    })
-}
-
-$( "#done-col-select" ).click(function(event) {
-    $.ajax({
-            url: 'localhost',
-            data: {"make": "Honda"},
-            type: 'POST',
-            success: function(response) {
-                console.log(response);
-            },
-            error: function(error) {
-                console.log(error);
-            }
-        });
-    console.log("POST")
-})
-
-</script>
-
 </body>
 </html>
