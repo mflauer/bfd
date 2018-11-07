@@ -35,16 +35,19 @@
 <script>
 
 $(document).ready(function(){
-  populateColumnTable(['A','B','C'], [true, false, true])
+    console.log(document.cookie);
+    setup = JSON.parse(document.cookie);
+    populateColumnTable(setup[0], setup[1])
+    // populateColumnTable(['A','B','C'], [true, false, true])
 });
 
 // server will spit back a list of all (column label, datatype) pairs
 function populateColumnTable(colLabels, isNumerics) {
-  $.each(colLabels, colIndex => {
-    var colLabel = colLabels[colIndex]
-    var isNumeric = isNumerics[colIndex]
+    $.each(colLabels, colIndex => {
+        var colLabel = colLabels[colIndex]
+        var isNumeric = isNumerics[colIndex]
 
-    var row = `<tr id="${colLabel}-row">
+        var row = `<tr id="${colLabel}-row">
               <td>${colLabel}</td>
               <td>
                 <input id="${colLabel}-check" name="${colLabel}" type="checkbox">
@@ -52,16 +55,16 @@ function populateColumnTable(colLabels, isNumerics) {
               <td>
                 <input id="${colLabel}-search" type="text">
               </td>
-              <td class="${isNumeric ? "faded" : ""}">
+              <td class="${isNumeric ? "" : "faded"}">
                 between
-                <input id="${colLabel}-lb" class="range-bound-box" type="text" ${isNumeric ? "disabled" : ""}>
+                <input id="${colLabel}-lb" class="range-bound-box" type="text" ${isNumeric ? "" : "disabled"}>
                 and
-                <input id="${colLabel}-ub" class="range-bound-box" type="text" ${isNumeric ? "disabled" : ""}>
+                <input id="${colLabel}-ub" class="range-bound-box" type="text" ${isNumeric ? "" : "disabled"}>
               </td>
             </tr>`
 
-    $("#all-col-table").append(row)
-  })
+        $("#all-col-table").append(row)
+    })
 }
 
 $( '#done-col-select' ).click(function(event) {
