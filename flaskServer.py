@@ -59,7 +59,7 @@ def receive_parameters_and_make_DB():
 
 
 @app.route("/receive_query", methods=['POST'])
-def output():
+def receive_query():
     print(request.form)
     return "Received Query"
 
