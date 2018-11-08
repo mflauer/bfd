@@ -61,6 +61,12 @@ def make_db_for_user(original_csv: str, inputs: dict, db_name: str = "test"):
     # return new db customized for them
     return True
 
+def query_db(sql_query):
+    conn = sqlite3.connect("received.db")
+    cur = conn.cursor()
+    results = cur.execute(sql_query).fetchall()
+    return results
+
 # used for testing purposes
 def read_file(table_name):
     cnx = sqlite3.connect("{}.db".format(table_name))

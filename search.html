@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+  <title>bfd search</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat|Oswald|Playfair+Display|Nunito:300" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+  /*css*/
+  </style>
+</head>
+<body>
+    <form id="search-bfd-form">
+        <fieldset>
+            <input id="search-text" type="text">
+            <button id="search-bfd-btn" type="button">Search BFD</button>
+        </fieldset>
+    </form>
+<script>
+$(function() {
+    $('#search-bfd-btn').click(function() {
+        var search_text = $('#search-text').val();
+        console.log(search_text)
+        $.ajax({
+            type: 'POST',
+            url: "http://localhost:5000/receive_query",
+            data: {"search_text": search_text},
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(error) {
+                console.log(error)
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>

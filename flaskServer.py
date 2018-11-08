@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect
 from flask_cors import CORS
 import json
-from makedb import make_db_for_user
+from makedb import make_db_for_user, query_db
 app = Flask(__name__)
 CORS(app)
 
@@ -60,8 +60,8 @@ def receive_parameters_and_make_DB():
 
 @app.route("/receive_query", methods=['POST'])
 def receive_query():
-    print(request.form)
-    return "Received Query"
+    sql_query = request.form['search_text'] #TODO any query -> sql
+    return str(query_db(sql_query))
 
 def is_number(s):
     try:

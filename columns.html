@@ -102,6 +102,7 @@ $( '#done-col-select' ).click(function(event) {
             type: 'POST',
             success: function(response) {
                 console.log(response);
+                window.location.href = "search.html"
             },
             error: function(error) {
                 console.log(error);
