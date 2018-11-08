@@ -58,12 +58,19 @@ def receive_parameters_and_make_DB():
         return "Parameters received, no rows matched specifications, no bfd created"
 
 
+@app.route("/receive_query", methods=['POST'])
+def output():
+    print(request.form)
+    return "Received Query"
+
 def is_number(s):
     try:
         float(s)
         return True
     except ValueError:
         return False
+
+
 
 # @app.route('/getpythondata')
 # def get_python_data():
