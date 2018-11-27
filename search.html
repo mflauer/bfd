@@ -8,34 +8,104 @@
   <link href="https://fonts.googleapis.com/css?family=Montserrat|Oswald|Playfair+Display|Nunito:300" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/typeahead.jquery.min.js"></script>
   <style>
   /*css*/
   </style>
 </head>
 <body>
     <form id="search-bfd-form">
-        <fieldset>
+<!--         <fieldset>
             <input id="search-text" type="text">
             <button id="search-bfd-btn" type="button">Search BFD</button>
-        </fieldset>
+        </fieldset> -->
+        <span id="fixed-text">
+          hiii
+        </span>
+        <span id="the-basics">
+          <input class="typeahead" type="text" placeholder="start typing your search...">
+        </span>
     </form>
 <script>
 $(function() {
-    $('#search-bfd-btn').click(function() {
-        var search_text = $('#search-text').val();
-        console.log(search_text)
-        $.ajax({
+    // $('#search-bfd-btn').click(function() {
+    //     var search_text = $('#search-text').val();
+    //     console.log(search_text)
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: "http://localhost:5000/receive_query",
+    //         data: {"search_text": search_text},
+    //         success: function(response) {
+    //             console.log(response);
+    //         },
+    //         error: function(error) {
+    //             console.log(error)
+    //         }
+    //     });
+    // });
+
+    var substringMatcher = function(strs) {
+      return function findMatches(q, cb) {
+        var matches, substringRegex;
+
+        // an array that will be populated with substring matches
+        matches = [];
+
+        // regex used to determine if a string contains the substring `q`
+        substrRegex = new RegExp(q, 'i');
+
+        // iterate through the pool of strings and for any string that
+        // contains the substring `q`, add it to the `matches` array
+        $.each(strs, function(i, str) {
+          if (substrRegex.test(str.slice(0,q.length))) {
+            matches.push(str);
+          }
+        });
+
+        cb(matches);
+      };
+    };
+
+    function setDropdownOptions(options) {
+      $('#the-basics .typeahead').typeahead({
+          hint: true,
+          highlight: true,
+          minLength: 1
+        },
+        {
+          name: 'options',
+          source: substringMatcher(options)
+        });
+    }
+
+    function getOptionsToDisplay(selectedText, setDropdownOptions) {
+      $.ajax({
             type: 'POST',
-            url: "http://localhost:5000/receive_query",
-            data: {"search_text": search_text},
+            url: "http://localhost:5000/get_options",
+            data: {"search_text": selectedText},
             success: function(response) {
                 console.log(response);
+                setDropdownOptions(JSON.parse(response))
             },
             error: function(error) {
                 console.log(error)
             }
         });
-    });
+    }
+
+    // on page load
+    getOptionsToDisplay("origin", setDropdownOptions);
+
+    $('.typeahead').on('typeahead:selected', function(evt, item) {
+      // add text to div before search box
+      var currentFixedText = $('#fixed-text').text();
+      $('#fixed-text').text(currentFixedText + " " + item);
+ 
+      getOptionsToDisplay(item, setDropdownOptions);
+  })
+
+
+
 });
 </script>
 </body>

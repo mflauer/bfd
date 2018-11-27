@@ -2,11 +2,12 @@ from flask import Flask, request, redirect
 from flask_cors import CORS
 import json
 from makedb import make_db_for_user, query_db
+from StructuredNLP import structuredNLP
 app = Flask(__name__)
 CORS(app)
 
 current_file_name = "received_file.csv"
-
+s = structuredNLP()
 
 @app.route("/run", methods=['POST'])
 def output():
@@ -70,7 +71,11 @@ def is_number(s):
     except ValueError:
         return False
 
-
+@app.route("/get_options", methods=['POST'])
+def get_options():
+    sql_query = request.form['search_text']
+    print(sql_query)
+    return json.dumps(s.updatePossibleSelections(sql_query))
 
 # @app.route('/getpythondata')
 # def get_python_data():

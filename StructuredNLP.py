@@ -55,10 +55,6 @@ class structuredNLP():
             else:
                 return self.phraseTree[choice]
 
-        nextOptions = self.phraseTree[choice]
-
-        return formatOptions(nextOptions)
-
 
     def getAllColumns(self):
         pass
