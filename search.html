@@ -20,7 +20,7 @@
             <button id="search-bfd-btn" type="button">Search BFD</button>
         </fieldset> -->
         <span id="fixed-text">
-          hiii
+          <!-- text dynamically added here -->
         </span>
         <span id="the-basics">
           <input class="typeahead" type="text" placeholder="start typing your search...">
@@ -67,14 +67,15 @@ $(function() {
     };
 
     function setDropdownOptions(options) {
+      $("#the-basics .typeahead").typeahead("destroy");
       $('#the-basics .typeahead').typeahead({
           hint: true,
           highlight: true,
-          minLength: 1
+          minLength: 0
         },
         {
           name: 'options',
-          source: substringMatcher(options)
+          source: substringMatcher(options),
         });
     }
 
@@ -100,6 +101,7 @@ $(function() {
       // add text to div before search box
       var currentFixedText = $('#fixed-text').text();
       $('#fixed-text').text(currentFixedText + " " + item);
+      $('.typeahead').typeahead('val','')
  
       getOptionsToDisplay(item, setDropdownOptions);
   })

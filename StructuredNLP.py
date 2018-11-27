@@ -25,57 +25,60 @@
 class structuredNLP():
     # on page load, return phraseTree["origin"]
     phraseTree = {"origin": ["Get the", "How many", "What is", "Get everything from"],
+                  "Get the": "columns",
                   "How many": "columns",
                   "Get everything from": "columns",
-                  "what is": ["the sum", "the max", "the min", "the average"]}
+                  "What is": ["the sum", "the max", "the min", "the average"]}
 
     def __init__(self):
-        self.projectColumns = []
         self.isPastWhere = False
+        self.tableName = ''
+        self.returnedColumn = False # last set of options user saw was list of columns
+        self.firstColumn = True
 
-    def addProjectionColumn(self, projCol):
-        self.projectColumns.append(projCol)
+    def setTableName(self, tableName):
+        self.tableName = tableName
 
-    def updatePossibleSelections(self, choice, column=False):
+    def updatePossibleSelections(self, choice):
         if choice == "where":
             self.isPastWhere = True
-            return self.getAllColumns()
 
         if self.isPastWhere:  # filtering out (THE LOOP)
-            if not column:
-                return self.getAllColumns()
+            if self.firstColumn:
+                self.firstColumn = False
+
+                self.returnedColumn = True
+                return self.appendWithIs(self.getAllColumns())
+
+            if not self.returnedColumn:
+                self.returnedColumn = True
+                return self.appendWithIs(self.prependWithAnd(self.getAllColumns()))
             else:  # we are filling in WHERE self.currentColumns [is/isgreater than????]
+                self.returnedColumn = False
                 return self.getColumnValues(choice)
         else:  # in initial projection/question selection
-            if column:
-
-                self.projectColumns.append(choice)
-                return self.getAllColumns()
-
+            if self.returnedColumn:
+                # return [AND + columns..., WHERE]
+                return self.prependWithAnd(self.getAllColumns()) + ["where"]
+                # output.append("where")
+                # return output
             else:
-                return self.phraseTree[choice]
+                phraseTreeValue = self.phraseTree[choice]
+                if phraseTreeValue == "columns":
+                    self.returnedColumn = True
+                    return self.getAllColumns()
+                else:
+                    return self.phraseTree[choice]
 
 
     def getAllColumns(self):
-        pass
-
-        # TODO
+        return ['col1', 'col2', 'col3']
 
     def getColumnValues(self, column):
-        pass
+        return ['val1', 'val2', 'val3']
 
-        # TODO
+    def prependWithAnd(self, allColumns):
+        return ['and {0}'.format(i) for i in allColumns]
 
-
-    def formatOptions(self, opts):
-        if "columns" == opts:
-            # get columns
-            return self.getAllColumns()
-        elif "columnValues" == opts:
-            pass
-            # return self.getColumnValues(currentColumns)
-        else:
-            return opts
-
-
-
+    def appendWithIs(self, allColumns):
+        return ['{0} is'.format(i) for i in allColumns]
