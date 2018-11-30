@@ -20,7 +20,7 @@
 
 # Dropdown workflow:
 # [“Get the”, “How many”, “What is”, “Get everything from”]
-
+from makedb import query_db
 
 class structuredNLP():
     # on page load, return phraseTree["origin"]
@@ -30,14 +30,16 @@ class structuredNLP():
                   "Get everything from": "columns",
                   "What is": ["the sum", "the max", "the min", "the average"]}
 
-    def __init__(self):
+    def __init__(self, tableName, colLabels):
         self.isPastWhere = False
-        self.tableName = ''
-        self.returnedColumn = False # last set of options user saw was list of columns
-        self.firstColumn = True
-
-    def setTableName(self, tableName):
         self.tableName = tableName
+
+        self.returnedColumn = False # last set of options user saw was list of
+        self.prevColumn = '' # if self.returnedColumn, what that column value was
+
+        self.firstColumn = True
+        self.allColumns = colLabels
+
 
     def updatePossibleSelections(self, choice):
         if choice == "where":
@@ -72,10 +74,13 @@ class structuredNLP():
 
 
     def getAllColumns(self):
-        return ['col1', 'col2', 'col3']
+        return self.allColumns
 
-    def getColumnValues(self, column):
-        return ['val1', 'val2', 'val3']
+    def getColumnValues(self, columnString):
+        column = columnString.split(" ")[-2]
+        query = "SELECT " + column + " FROM " + self.tableName + ";"
+        queryResult = query_db(query)
+        return list(set([item.lstrip().strip() for sublist in queryResult for item in sublist]))
 
     def prependWithAnd(self, allColumns):
         return ['and {0}'.format(i) for i in allColumns]

@@ -5,8 +5,7 @@ import numpy as np
 
 
 # inputs user expects to query over
-def make_db_for_user(original_csv: str, inputs: dict, db_name: str = "test"):
-    table_name = db_name
+def make_db_for_user(original_csv: str, inputs: dict, table_name: str = "test"):
     # pull out only the columns relevant for their inputs
     original_df = pd.read_csv(original_csv)
 
@@ -59,7 +58,7 @@ def make_db_for_user(original_csv: str, inputs: dict, db_name: str = "test"):
             cur.execute("INSERT INTO {tablen} VALUES({val})".format(tablen=table_name, val=rowVal))
 
     # return new db customized for them
-    return True
+    return colInputs
 
 def query_db(sql_query):
     conn = sqlite3.connect("received.db")

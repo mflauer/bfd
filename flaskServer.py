@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 current_file_name = "received_file.csv"
-s = structuredNLP()
+s = None
 
 @app.route("/run", methods=['POST'])
 def output():
@@ -52,11 +52,15 @@ def receive_parameters_and_make_DB():
         value_list[2] = int(value_list[2]) if value_list[2] != "" else None
         parameter_dic[key[:-2]] = value_list
 
-    result = make_db_for_user(current_file_name, parameter_dic, "received")
-    if result:
-        return "Parameters received, bfd built"
-    else:
+    tableName = "received"
+    result = make_db_for_user(current_file_name, parameter_dic, tableName)
+    global s
+    if not result:
         return "Parameters received, no rows matched specifications, no bfd created"
+    else:
+        s = structuredNLP(tableName, result)
+        return "Parameters received, bfd built"
+
 
 
 @app.route("/receive_query", methods=['POST'])
@@ -75,6 +79,7 @@ def is_number(s):
 def get_options():
     sql_query = request.form['search_text']
     print(sql_query)
+    global s
     return json.dumps(s.updatePossibleSelections(sql_query))
 
 # @app.route('/getpythondata')
