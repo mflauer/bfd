@@ -2,7 +2,7 @@ from flask import Flask, request, redirect
 from flask_cors import CORS
 import json
 from makedb import make_db_for_user, query_db
-from StructuredNLP import structuredNLP
+from StructuredNLP import StructuredNLP
 app = Flask(__name__)
 CORS(app)
 
@@ -58,7 +58,7 @@ def receive_parameters_and_make_DB():
     if not result:
         return "Parameters received, no rows matched specifications, no bfd created"
     else:
-        s = structuredNLP(tableName, result)
+        s = StructuredNLP(tableName, result)
         return "Parameters received, bfd built"
 
 

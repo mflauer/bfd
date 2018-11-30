@@ -21,8 +21,9 @@
 # Dropdown workflow:
 # [“Get the”, “How many”, “What is”, “Get everything from”]
 from makedb import query_db
+from SqlBuilder import SqlBuilder
 
-class structuredNLP():
+class StructuredNLP():
     # on page load, return phraseTree["origin"]
     phraseTree = {"origin": ["Get the", "How many", "What is", "Get everything from"],
                   "Get the": "columns",
@@ -40,6 +41,8 @@ class structuredNLP():
         self.firstColumn = True
         self.allColumns = colLabels
 
+        self.sqlBuilder = SqlBuilder(tableName)
+
 
     def updatePossibleSelections(self, choice):
         if choice == "where":
@@ -48,29 +51,33 @@ class structuredNLP():
         if self.isPastWhere:  # filtering out (THE LOOP)
             if self.firstColumn:
                 self.firstColumn = False
-
                 self.returnedColumn = True
+                self.sqlBuilder.hitWhere()
                 return self.appendWithIs(self.getAllColumns())
 
             if not self.returnedColumn:
                 self.returnedColumn = True
+                self.sqlBuilder.addColumnValue(choice)
                 return self.appendWithIs(self.prependWithAnd(self.getAllColumns()))
             else:  # we are filling in WHERE self.currentColumns [is/isgreater than????]
                 self.returnedColumn = False
+                self.sqlBuilder.addColumn(choice)
                 return self.getColumnValues(choice)
         else:  # in initial projection/question selection
             if self.returnedColumn:
                 # return [AND + columns..., WHERE]
+                self.sqlBuilder.addColumn(choice)
                 return self.prependWithAnd(self.getAllColumns()) + ["where"]
                 # output.append("where")
                 # return output
             else:
                 phraseTreeValue = self.phraseTree[choice]
                 if phraseTreeValue == "columns":
+                    self.sqlBuilder.baseSQLQuery(choice)
                     self.returnedColumn = True
                     return self.getAllColumns()
                 else:
-                    return self.phraseTree[choice]
+                    return self.phraseTree[choice] # very first step only
 
 
     def getAllColumns(self):
