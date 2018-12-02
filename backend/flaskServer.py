@@ -78,6 +78,12 @@ def is_number(s):
     except ValueError:
         return False
 
+@app.route("/reset_query", methods=['POST'])
+def reset_query():
+    global s
+    return json.dumps(s.resetQuery())
+
+
 @app.route("/get_options", methods=['POST'])
 def get_options():
     sql_query = request.form['search_text']
