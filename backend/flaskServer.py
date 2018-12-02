@@ -83,9 +83,6 @@ def get_options():
     return json.dumps(s.updatePossibleSelections(sql_query))
 
 
-
-
-
 # @app.route('/getpythondata')
 # def get_python_data():
 #     return json.dumps(pythondata)
