@@ -20,7 +20,7 @@
         </span>
         <span id="the-basics">
           <input class="typeahead" type="text" placeholder="start typing your search...">
-          <button id="search-bfd-btn">Done</button>
+          <button id="search-bfd-btn" type="button">Done</button>
         </span>
     </form>
     <div id='query-results-container'>
@@ -84,11 +84,12 @@ $(function() {
             type: 'POST',
             url: "http://localhost:5000/run_query",
             success: function(response) {
-                console.log(response);
-                e.preventDefault();
-                $('#query-results-container').append( "<p>Got a result</p>" );
+                e.preventDefault()
+                console.log(JSON.parse(response));
+                // $('#query-results-container').append( "<p>Got a result</p>" );
             },
             error: function(error) {
+                console.log("ERROR")
                 console.log(error)
             }
         });

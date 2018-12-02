@@ -96,5 +96,6 @@ class StructuredNLP():
         return ['{0} is'.format(i) for i in allColumns]
 
     def runQuery(self):
+        print(query_db(self.sqlBuilder.getQuery()))
         return query_db(self.sqlBuilder.getQuery())
 

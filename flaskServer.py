@@ -66,7 +66,7 @@ def receive_parameters_and_make_DB():
 @app.route("/run_query", methods=['POST'])
 def receive_query():
     global s
-    return s.runQuery()
+    return json.dumps(s.runQuery())
 
 
 def is_number(s):
