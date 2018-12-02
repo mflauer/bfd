@@ -17,16 +17,22 @@
     <div class="card">
       <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Column Specifications</h3>
       <div class="card-body">
-        <div id="table" class="table-editable">
+        <table id="col-header-table">
+            <tr>
+              <th class="text-center col-name">Column Name</th>
+              <th class="text-center check-data">
+                Include data from this column?
+                <span class="normal-font-weight">Select all:</span>
+                <input id="select-all" type="checkbox">
+              </th>
+              <th class="text-center spec-search">Specific searches<p>(e.x. The Godfather, Meryl Strep)</p></th>
+              <th class="text-center range">Range <p>(for numeric values)</p></th>
+          </tr>
+        </table>
+        <div id="all-col-table-container" class="table-editable">
           <span class="table-add float-right mb-3 mr-2"><a href="#!" class="text-success"><i class="fa fa-plus fa-2x"
                 aria-hidden="true"></i></a></span>
           <table id="all-col-table" class="table table-bordered table-responsive-md table-striped text-center">
-            <tr>
-              <th class="text-center col-name">Column Name</th>
-              <th class="text-center check-data">Include data from this column?</th>
-              <th class="text-center spec-search">Specific searches<p>(e.x. The Godfather, Meryl Strep)</p></th>
-              <th class="text-center range">Range <p>(for numeric values)</p></th>
-            </tr>
             <!-- dynamically generated rows will go here -->
           </table>
         </div>
@@ -84,6 +90,10 @@ function populateColumnTable(colLabels, isNumerics) {
         $("#all-col-table").append(row)
     })
 }
+
+ $("#select-all").click(function () {
+     $('input:checkbox').not(this).prop('checked', this.checked);
+ });
 
 $( '#done-col-select' ).click(function(event) {
     var to_send = {};
