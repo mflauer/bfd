@@ -23,6 +23,7 @@
 from makedb import query_db
 from SqlBuilder import SqlBuilder
 
+
 class StructuredNLP():
     # on page load, return phraseTree["origin"]
     phraseTree = {"origin": ["Get the", "How many", "What is", "Get everything from"],
@@ -96,6 +97,6 @@ class StructuredNLP():
         return ['{0} is'.format(i) for i in allColumns]
 
     def runQuery(self):
-        print(query_db(self.sqlBuilder.getQuery()))
+        print(self.sqlBuilder.getQuery())
         return query_db(self.sqlBuilder.getQuery())
 

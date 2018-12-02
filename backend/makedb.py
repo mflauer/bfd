@@ -43,7 +43,6 @@ def make_db_for_user(original_csv: str, inputs: dict, table_name: str = "test"):
     with con:
         cur = con.cursor()
         cur.execute("DROP TABLE IF EXISTS {tablen}".format(tablen=table_name))
-        print("CREATE TABLE {tablen}(id INTEGER PRIMARY KEY{headers})".format(tablen=table_name, headers=colHeaders))
         cur.execute("CREATE TABLE {tablen}(id INTEGER PRIMARY KEY{headers})".format(tablen=table_name, headers=colHeaders))
 
         for index, row in finalDf.iterrows():

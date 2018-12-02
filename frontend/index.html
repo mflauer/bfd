@@ -26,7 +26,6 @@
 $(function() {
     $('#upload-file-btn').click(function() {
         var form_data = new FormData($('#upload-file')[0]);
-        form_data.
         $.ajax({
             type: 'POST',
             url: "http://localhost:5000/file_receiver",
@@ -35,9 +34,9 @@ $(function() {
             cache: false,
             processData: false,
             success: function(response) {
-                res = JSON.parse(response);
+                document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+                document.cookie = "tableName=" + $('#table_name').val();
                 document.cookie = "colData=" + response;
-                document.cooke = "tableName=" + $('#textbox_id').val;
                 window.location.href = "columns.html";
             },
             error: function(error) {

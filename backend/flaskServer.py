@@ -45,14 +45,16 @@ def file_parser():
 def receive_parameters_and_make_DB():
     form_data = request.form
     parameter_dic = {}
+    tableName = form_data["DB_table_name"]
     for key in form_data:
+        if key == "DB_table_name":
+            continue
         value_list = form_data.getlist(key)
         value_list[0] = set(value_list[0].strip().split(", ")) if value_list[0] != "" else None
         value_list[1] = int(value_list[1]) if value_list[1] != "" else None
         value_list[2] = int(value_list[2]) if value_list[2] != "" else None
         parameter_dic[key[:-2]] = value_list
 
-    tableName = "received"
     result = make_db_for_user(current_file_name, parameter_dic, tableName)
     global s
     if not result:

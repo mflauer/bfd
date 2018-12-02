@@ -15,7 +15,7 @@
 </head>
 <body>
     <div class="card">
-      <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Column Specifications</h3>
+      <h3 id = "header" class="card-header text-center font-weight-bold text-uppercase py-4">Column Specifications</h3>
       <div class="card-body">
         <table id="col-header-table">
             <tr>
@@ -43,9 +43,7 @@
 
 $(document).ready(function(){
     setup = JSON.parse(getCookie("colData"));
-    console.log(setup)
     populateColumnTable(setup[0], setup[1])
-    // populateColumnTable(['A','B','C'], [true, false, true])
 });
 
 // from w3 https://www.w3schools.com/js/js_cookies.asp
@@ -96,7 +94,8 @@ function populateColumnTable(colLabels, isNumerics) {
  });
 
 $( '#done-col-select' ).click(function(event) {
-    var to_send = {};
+    tableName = getCookie("tableName");
+    var to_send = {"DB_table_name": tableName};
     $('[id$=-row] input:checked').each(function() { //for each checked function
         var colLabel = $(this).attr('name');
         

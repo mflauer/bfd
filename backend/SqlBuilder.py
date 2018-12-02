@@ -1,6 +1,4 @@
 
-
-
 class SqlBuilder():
 
     baseTree = {"Get the": "SELECT ", }
