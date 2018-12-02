@@ -96,6 +96,17 @@ class StructuredNLP():
         return ['{0} is'.format(i) for i in allColumns]
 
     def runQuery(self):
-        print(query_db(self.sqlBuilder.getQuery()))
         return query_db(self.sqlBuilder.getQuery())
+
+    def resetQuery(self):
+        self.isPastWhere = False
+
+        self.returnedColumn = False # last set of options user saw was list of
+        self.prevColumn = '' # if self.returnedColumn, what that column value was
+
+        self.firstColumn = True
+
+        self.sqlBuilder = SqlBuilder(self.tableName)
+        return
+
 
