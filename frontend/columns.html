@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="../style.css"/>
   <link href="https://fonts.googleapis.com/css?family=Montserrat|Oswald|Playfair+Display|Nunito:300" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -65,14 +66,14 @@ function populateColumnTable(colLabels, isNumerics) {
         var isNumeric = isNumerics[colIndex]
 
         var row = `<tr id="${colLabel}-row">
-              <td>${colLabel}</td>
-              <td>
+              <td class='col-name'>${colLabel}</td>
+              <td class='check-data'>
                 <input id="${colLabel}-check" name="${colLabel}" type="checkbox">
               </td>
-              <td>
+              <td class='spec-search'>
                 <input id="${colLabel}-search" type="text">
               </td>
-              <td class="${isNumeric ? "" : "faded"}">
+              <td class="${isNumeric ? "" : "faded"} range">
                 Greater than
                 <input id="${colLabel}-lb" class="range-bound-box" type="text" ${isNumeric ? "" : "disabled"}>
                 Less than
