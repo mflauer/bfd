@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-  <title>bfd</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link href="https://fonts.googleapis.com/css?family=Montserrat|Oswald|Playfair+Display|Nunito:300" rel="stylesheet">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <style>
-  /*css*/
-  </style>
+    <title>bfd</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Oswald|Playfair+Display|Nunito:300" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
     <form id="upload-file" method="post" enctype="multipart/form-data">
         <fieldset>
-            <label for="file">Select a file</label>
+            Database Name: <input id="table_name" type="text" value="BFD"><br>
+        </fieldset>
+        <fieldset>
             <input name="file" type="file">
         </fieldset>
         <fieldset>
@@ -26,6 +26,7 @@
 $(function() {
     $('#upload-file-btn').click(function() {
         var form_data = new FormData($('#upload-file')[0]);
+        form_data.
         $.ajax({
             type: 'POST',
             url: "http://localhost:5000/file_receiver",
@@ -35,9 +36,8 @@ $(function() {
             processData: false,
             success: function(response) {
                 res = JSON.parse(response);
-                console.log(res);
                 document.cookie = "colData=" + response;
-                console.log("Switching pages");
+                document.cooke = "tableName=" + $('#textbox_id').val;
                 window.location.href = "columns.html";
             },
             error: function(error) {
