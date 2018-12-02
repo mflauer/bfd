@@ -94,3 +94,7 @@ class StructuredNLP():
 
     def appendWithIs(self, allColumns):
         return ['{0} is'.format(i) for i in allColumns]
+
+    def runQuery(self):
+        return query_db(self.sqlBuilder.getQuery())
+

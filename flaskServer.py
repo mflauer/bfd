@@ -63,10 +63,11 @@ def receive_parameters_and_make_DB():
 
 
 
-@app.route("/receive_query", methods=['POST'])
+@app.route("/run_query", methods=['POST'])
 def receive_query():
-    sql_query = request.form['search_text'] #TODO any query -> sql
-    return str(query_db(sql_query))
+    global s
+    return s.runQuery()
+
 
 def is_number(s):
     try:
@@ -78,9 +79,12 @@ def is_number(s):
 @app.route("/get_options", methods=['POST'])
 def get_options():
     sql_query = request.form['search_text']
-    print(sql_query)
     global s
     return json.dumps(s.updatePossibleSelections(sql_query))
+
+
+
+
 
 # @app.route('/getpythondata')
 # def get_python_data():
