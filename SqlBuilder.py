@@ -15,12 +15,10 @@ class SqlBuilder():
 
     def baseSQLQuery(self, choice):
         self.query += self.baseTree[choice]
-        print(self.query)
 
     def hitWhere(self):
         self.didHitWhere = True
         self.query += " FROM " + self.tableName + " WHERE "
-        print(self.query)
 
     def addColumn(self, col):
         if self.didHitWhere:
@@ -32,12 +30,10 @@ class SqlBuilder():
                 self.query += ", " + col
             else:
                 self.query += col
-        print(self.query)
 
 
     def addColumnValue(self, val):
         self.query += " = '" + val + "' "
-        print(self.query)
 
     def getQuery(self):
         print(self.query)

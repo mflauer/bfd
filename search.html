@@ -15,34 +15,19 @@
 </head>
 <body>
     <form id="search-bfd-form">
-<!--         <fieldset>
-            <input id="search-text" type="text">
-            <button id="search-bfd-btn" type="button">Search BFD</button>
-        </fieldset> -->
         <span id="fixed-text">
           <!-- text dynamically added here -->
         </span>
         <span id="the-basics">
           <input class="typeahead" type="text" placeholder="start typing your search...">
+          <button id="search-bfd-btn">Done</button>
         </span>
     </form>
+    <div id='query-results-container'>
+
+    </div>
 <script>
 $(function() {
-    // $('#search-bfd-btn').click(function() {
-    //     var search_text = $('#search-text').val();
-    //     console.log(search_text)
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: "http://localhost:5000/receive_query",
-    //         data: {"search_text": search_text},
-    //         success: function(response) {
-    //             console.log(response);
-    //         },
-    //         error: function(error) {
-    //             console.log(error)
-    //         }
-    //     });
-    // });
 
     var substringMatcher = function(strs) {
       return function findMatches(q, cb) {
@@ -93,6 +78,21 @@ $(function() {
             }
         });
     }
+
+    $('#search-bfd-btn').click(function(e) {
+        $.ajax({
+            type: 'POST',
+            url: "http://localhost:5000/run_query",
+            success: function(response) {
+                console.log(response);
+                e.preventDefault();
+                $('#query-results-container').append( "<p>Got a result</p>" );
+            },
+            error: function(error) {
+                console.log(error)
+            }
+        });
+    });
 
     // on page load
     getOptionsToDisplay("origin", setDropdownOptions);
