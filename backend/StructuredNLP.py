@@ -67,7 +67,7 @@ class StructuredNLP():
             if self.returnedColumn:
                 # return [AND + columns..., WHERE]
                 self.sqlBuilder.addColumn(choice)
-                return self.prependWithAnd(self.getAllColumns()) + ["where"]
+                return ["where"] + self.prependWithAnd(self.getAllColumns())
                 # output.append("where")
                 # return output
             else:

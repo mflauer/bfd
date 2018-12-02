@@ -36,6 +36,5 @@ class SqlBuilder():
         self.query += " = '" + val + "' "
 
     def getQuery(self):
-        print(self.query)
-        return self.query
+        return self.query + ";"
 
