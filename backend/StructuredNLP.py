@@ -32,7 +32,7 @@ class StructuredNLP():
                   "Get everything from": "columns",
                   "What is": ["the sum", "the max", "the min", "the average"]}
 
-    def __init__(self, tableName, colLabels):
+    def __init__(self, tableName, colLabels, isColNumeric):
         self.isPastWhere = False
         self.tableName = tableName
 
@@ -41,6 +41,7 @@ class StructuredNLP():
 
         self.firstColumn = True
         self.allColumns = colLabels
+        self.isColNumeric = isColNumeric
 
         self.sqlBuilder = SqlBuilder(tableName)
 
@@ -83,6 +84,9 @@ class StructuredNLP():
 
     def getAllColumns(self):
         return self.allColumns
+
+    def getNumericColumns(self):
+        return self.allColumns.filter(colIndex => self.isNumeric[colIndex])
 
     def getColumnValues(self, columnString):
         column = columnString.split(" ")[-2]

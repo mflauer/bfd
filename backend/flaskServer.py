@@ -55,12 +55,12 @@ def receive_parameters_and_make_DB():
         value_list[2] = int(value_list[2]) if value_list[2] != "" else None
         parameter_dic[key[:-2]] = value_list
 
-    result = make_db_for_user(current_file_name, parameter_dic, tableName)
+    result, isResultNumeric = make_db_for_user(current_file_name, parameter_dic, tableName)
     global s
     if not result:
         return "Parameters received, no rows matched specifications, no bfd created"
     else:
-        s = StructuredNLP(tableName, result)
+        s = StructuredNLP(tableName, result, isResultNumeric)
         return "Parameters received, bfd built"
 
 

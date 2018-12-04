@@ -27,6 +27,7 @@ def make_db_for_user(original_csv: str, inputs: dict, table_name: str = "test"):
         return False
 
     # generate column headers for the db
+    colIsNumeric = []
     colHeaders = ""
     numericCols = {}
     for inp in inputs:
@@ -37,6 +38,7 @@ def make_db_for_user(original_csv: str, inputs: dict, table_name: str = "test"):
         else:
             data_type = "TEXT"
         colHeaders += ", '" + inp + "' " + data_type
+        colIsNumeric.append(isNumeric)
 
     # go from our customized dataframe to db file
 
@@ -59,7 +61,7 @@ def make_db_for_user(original_csv: str, inputs: dict, table_name: str = "test"):
             cur.execute("INSERT INTO {tablen} VALUES({val})".format(tablen=table_name, val=rowVal))
 
     # return new db customized for them
-    return colInputs
+    return colInputs, colIsNumeric
 
 
 def query_db(sql_query, table_name):
