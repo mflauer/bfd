@@ -25,12 +25,6 @@ from SqlBuilder import SqlBuilder
 
 
 class StructuredNLP():
-    # on page load, return phraseTree["origin"]
-    phraseTree = {"origin": ["Get the", "How many", "What is", "Get everything from"],
-                  "Get the": "columns",
-                  "How many": "columns",
-                  "Get everything from": "columns",
-                  "What is": ["the sum", "the max", "the min", "the average"]}
 
     def __init__(self, tableName, colLabels):
         self.isPastWhere = False
@@ -43,6 +37,12 @@ class StructuredNLP():
         self.allColumns = colLabels
 
         self.sqlBuilder = SqlBuilder(tableName)
+        # on page load, return phraseTree["origin"]
+        self.phraseTree = {"origin": ["Get the", "How many " + tableName + " entries are there where", "What is", "Get everything from"],
+                      "Get the": "columns",
+                      "How many " + tableName + " entries are there where":  "where",
+                      "Get everything from": "columns",
+                      "What is": ["the sum", "the max", "the min", "the average"]}
 
 
     def updatePossibleSelections(self, choice):
@@ -73,6 +73,11 @@ class StructuredNLP():
                 # return output
             else:
                 phraseTreeValue = self.phraseTree[choice]
+
+                if phraseTreeValue == "where":
+                    self.sqlBuilder.baseSQLQuery(choice)
+                    return self.updatePossibleSelections(phraseTreeValue)
+
                 if phraseTreeValue == "columns":
                     self.sqlBuilder.baseSQLQuery(choice)
                     self.returnedColumn = True
@@ -103,8 +108,8 @@ class StructuredNLP():
     def resetQuery(self):
         self.isPastWhere = False
 
-        self.returnedColumn = False # last set of options user saw was list of
-        self.prevColumn = '' # if self.returnedColumn, what that column value was
+        self.returnedColumn = False  # last set of options user saw was list of
+        self.prevColumn = ''  # if self.returnedColumn, what that column value was
 
         self.firstColumn = True
 
