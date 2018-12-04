@@ -25,9 +25,12 @@
           <button id="search-bfd-btn" type="button">Go</button>
         </div>
     </form>
-    <div id='query-results-container'>
-
+    <div id="results-generator-text">
+      <!-- text dynamically added here -->
     </div>
+    <table id="query-results-table" class="table table-bordered table-responsive-md table-striped text-center">
+      <!-- dynamically generated rows will go here -->
+    </table>
 <script>
 $(function() {
 
@@ -82,14 +85,34 @@ $(function() {
         });
     }
 
+    function addResultsRows(results) {
+      var currentFixedText = $('#fixed-text').text();
+      $('#results-generator-text').text("You searched for:" + currentFixedText);
+      $('#fixed-text').text("");
+
+      $("#query-results-table").empty();
+      for (var i=0; i<results.length; i++) {
+        rowHTML = '<tr class="result-row">'
+        
+        row = results[i]
+        for (var c=0; c<row.length; c++) {
+          colValue = row[c]
+          rowHTML = rowHTML.concat(`<td>${colValue}</td>`)
+        }
+        rowHTML = rowHTML.concat('</tr>')
+
+        $("#query-results-table").append(rowHTML)
+      }
+    }
+
     $('#search-bfd-btn').click(function(e) {
         $.ajax({
             type: 'POST',
             url: "http://localhost:5000/run_query",
             success: function(response) {
                 e.preventDefault()
-                console.log(JSON.parse(response));
-                // $('#query-results-container').append( "<p>Got a result</p>" );
+                addResultsRows(JSON.parse(response));
+                getOptionsToDisplay("origin", setDropdownOptions);
             },
             error: function(error) {
                 console.log("ERROR")
