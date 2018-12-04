@@ -14,6 +14,15 @@ class SqlBuilder():
     def baseSQLQuery(self, choice):
         self.query += self.baseTree[choice]
 
+    def addAggregate(self, aggType, column):
+        aggSQL = aggType
+        if aggType == "average":
+            aggSQL = "avg"
+
+        print(aggType)
+        print(column)
+        self.query = "SELECT " + aggSQL + "(" + column + ")"
+
     def hitWhere(self):
         self.didHitWhere = True
         self.query += " FROM " + self.tableName + " WHERE "
