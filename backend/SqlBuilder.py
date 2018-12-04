@@ -1,15 +1,15 @@
 
 class SqlBuilder():
 
-    baseTree = {"Get the": "SELECT ", }
-                  # "How many": "columns",
-                  # "Get everything from": "columns",
-                  # "What is": ["the sum", "the max", "the min", "the average"]}
-
     def __init__(self, tableName):
         self.query = ""
         self.tableName = tableName
         self.didHitWhere = False
+
+        self.baseTree = {"Get the": "SELECT ",
+                    "How many " + tableName + " entries are there where": "SELECT COUNT(*)"}
+        # "Get everything from": "columns",
+        # "What is": ["the sum", "the max", "the min", "the average"]}
 
     def baseSQLQuery(self, choice):
         self.query += self.baseTree[choice]
