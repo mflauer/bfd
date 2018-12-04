@@ -15,15 +15,17 @@
 </head>
 <body>
     <div class="card">
-      <h3 id = "header" class="card-header text-center font-weight-bold text-uppercase py-4">Column Specifications</h3>
+      <h3 id = "column-title" class="card-header text-center font-weight-bold text-uppercase py-4">Column Specifications</h3>
       <div class="card-body">
         <table id="col-header-table">
             <tr>
               <th class="text-center col-name">Column Name</th>
               <th class="text-center check-data">
-                Include data from this column?
-                <span class="normal-font-weight">Select all:</span>
-                <input id="select-all" type="checkbox">
+                Use this data?
+                <div>
+                  <span class="normal-font-weight">Select all:</span>
+                  <input id="select-all" type="checkbox">
+                </div>
               </th>
               <th class="text-center spec-search">Specific searches<p>(e.x. The Godfather, Meryl Strep)</p></th>
               <th class="text-center range">Range <p>(for numeric values)</p></th>
@@ -38,7 +40,9 @@
         </div>
       </div>
     </div>
-    <button id="done-col-select">Done</button>
+    <div id="done-col-container">
+      <button id="done-col-select">Done</button>
+    </div>
 <script>
 
 $(document).ready(function(){

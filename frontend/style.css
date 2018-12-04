@@ -1,3 +1,33 @@
+#landing-body {
+    background: #4682b4;
+}
+
+#landing-title {
+    text-align: center;
+    color: white;
+    margin-top: 100px;
+    font-family: 'Oswald', sans-serif;
+    font-size:80px;
+}
+
+#column-title {
+    font-family: 'Oswald', sans-serif;
+    font-size:40px;
+}
+
+#landing-desc {
+    text-align: center;
+    max-width: 70%;
+    margin: auto;
+    color: lightgray;
+    font-size: 20px;
+}
+
+#landing-body>form{
+    background: #4682b4;
+    font-size: 16px;
+}
+
 .col-name {
     width:30%;
 }
@@ -14,25 +44,64 @@
     width:30%;
 }
 
+#col-header-table {
+    width: 96vw;
+    margin: auto;
+}
+
 #all-col-table-container {
-    height:600px;
+    max-height:65vh;
+    width: 96vw;
+    margin: auto;
     overflow:scroll;
+}
+
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   background-color: #b5cde1;
 }
 
 .normal-font-weight {
     font-weight:normal;
 }
 
+#done-col-container {
+    text-align: right;
+}
+
+#done-col-select {
+    background-color: #4682b4;
+    color: white;
+    height: 50px;
+    font-size: 25px;
+    width: 150px;
+    border-radius: 10px;
+    border: none;
+    margin: 20px;
+}
+
 #upload-file {
-    height: 200px;
     width: 400px;
     background: #ffffff;
+    margin: 20px auto;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 20px;
+}
 
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    margin-top: -100px;
-    margin-left: -200px;
+#upload-file>* {
+    margin-bottom:10px;
+}
+
+#upload-btn-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+#upload-file-btn{
+    width: 100px;
+    height: 30px;
+    border: none;
+    border-radius: 10px;
 }
 
 #search-bfd-form{
