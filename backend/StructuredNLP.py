@@ -87,7 +87,7 @@ class StructuredNLP():
     def getColumnValues(self, columnString):
         column = columnString.split(" ")[-2]
         query = "SELECT " + column + " FROM " + self.tableName + ";"
-        queryResult = query_db(query)
+        queryResult = query_db(query, self.tableName)
         return list(set([str(item).lstrip().strip() for sublist in queryResult for item in sublist]))
 
     def prependWithAnd(self, allColumns):
@@ -98,7 +98,7 @@ class StructuredNLP():
 
     def runQuery(self):
         print(self.sqlBuilder.getQuery())
-        return query_db(self.sqlBuilder.getQuery())
+        return query_db(self.sqlBuilder.getQuery(), self.tableName)
 
     def resetQuery(self):
         self.isPastWhere = False

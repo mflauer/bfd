@@ -59,8 +59,8 @@ def make_db_for_user(original_csv: str, inputs: dict, table_name: str = "test"):
     # return new db customized for them
     return colInputs
 
-def query_db(sql_query):
-    conn = sqlite3.connect("received.db")
+def query_db(sql_query, tableName):
+    conn = sqlite3.connect(tableName + ".db")
     cur = conn.cursor()
     results = cur.execute(sql_query).fetchall()
     return results
@@ -75,5 +75,5 @@ def read_file(table_name):
  
 if __name__ == '__main__':
     # make_db_for_user('movie_metadata.csv', {'director_name': {'Christopher Nolan', 'James Cameron'}, 'duration': [100, 120], 'movie_title': None})
-    read_file("received")
+    print(query_db("SELECT director_name FROM BFD WHERE movie_title = 'Avatar\xa0' ;", "BFD"))
 
