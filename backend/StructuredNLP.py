@@ -88,7 +88,7 @@ class StructuredNLP():
         column = columnString.split(" ")[-2]
         query = "SELECT " + column + " FROM " + self.tableName + ";"
         queryResult = query_db(query, self.tableName)
-        return list(set([str(item).lstrip().strip() for sublist in queryResult for item in sublist]))
+        return list(set([str(item) for sublist in queryResult for item in sublist]))
 
     def prependWithAnd(self, allColumns):
         return ['and {0}'.format(i) for i in allColumns]

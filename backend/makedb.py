@@ -39,6 +39,7 @@ def make_db_for_user(original_csv: str, inputs: dict, table_name: str = "test"):
         colHeaders += ", '" + inp + "' " + data_type
 
     # go from our customized dataframe to db file
+
     con = sqlite3.connect('{}.db'.format(table_name))
     with con:
         cur = con.cursor()
@@ -50,9 +51,9 @@ def make_db_for_user(original_csv: str, inputs: dict, table_name: str = "test"):
             for colLabel in list(finalDf):
                 currentVal = row[colLabel]
                 if numericCols[colLabel]:
-                    toAdd = str(currentVal) if not pd.isna(currentVal) else str(0)
+                    toAdd = str(currentVal).lstrip().strip() if not pd.isna(currentVal) else str(0)
                 else:
-                    toAdd = '"' + str(currentVal) + '"' if not pd.isna(currentVal) else '""'
+                    toAdd = '"' + str(currentVal).lstrip().strip() + '"' if not pd.isna(currentVal) else '""'
                 rowVal += "," + toAdd
             cur.execute("INSERT INTO {tablen} VALUES({val})".format(tablen=table_name, val=rowVal))
 
