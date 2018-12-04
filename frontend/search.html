@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
   <link href="https://fonts.googleapis.com/css?family=Montserrat|Oswald|Playfair+Display|Nunito:300" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -15,14 +16,14 @@
 </head>
 <body>
     <form id="search-bfd-form">
-        <span id="fixed-text">
+        <div id="fixed-text">
           <!-- text dynamically added here -->
-        </span>
-        <span id="the-basics">
-          <input class="typeahead" type="text" placeholder="start typing your search...">
-          <button id="reset-query-btn" type="button">Reset</button>
-          <button id="search-bfd-btn" type="button">Done</button>
-        </span>
+        </div>
+        <div id="the-basics">
+          <input class="typeahead" type="text" placeholder="Search...">
+          <button id="reset-query-btn" type="button">X</button>
+          <button id="search-bfd-btn" type="button">Go</button>
+        </div>
     </form>
     <div id='query-results-container'>
 

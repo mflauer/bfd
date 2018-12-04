@@ -34,3 +34,48 @@
     margin-top: -100px;
     margin-left: -200px;
 }
+
+#search-bfd-form{
+    width: 50%;
+    margin: 100px auto 0 auto;
+}
+
+#the-basics {
+    position: relative;
+}
+
+.twitter-typeahead{
+    width:100%;
+}
+
+.typeahead {
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+
+.typeahead>* {
+    width: 100%
+}
+
+#reset-query-btn {
+    position: absolute;
+    top: 8px;
+    right: 7px;
+    border-radius: 15px;
+    background: lightgray;
+    color: white;
+    border: none;
+}
+
+#search-bfd-btn {
+    position: absolute;
+    right: 0;
+    margin-top: 3px;
+    border-radius: 5px;
+    background: #4682b4;
+    color: white;
+    height: 30px;
+    width: 80px;
+}
