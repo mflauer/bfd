@@ -16,6 +16,8 @@ def output():
 
 @app.route('/file_receiver', methods=['POST'])
 def file_parser():
+    # for file in request.files.getlist("file"):
+    #   file is here!!!
     f = request.files['file']
     headers = None
     isNumeric = []
