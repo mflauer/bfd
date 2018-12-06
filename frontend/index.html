@@ -28,6 +28,7 @@
 <script>
 $(function() {
     $('#upload-file-btn').click(function() {
+        console.log(new FormData($('#upload-file')))
         var form_data = new FormData($('#upload-file')[0]);
         $.ajax({
             type: 'POST',

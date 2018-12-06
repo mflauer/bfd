@@ -8,8 +8,6 @@ class SqlBuilder():
 
         self.baseTree = {"Get the": "SELECT ",
                     "How many " + tableName + " entries are there where": "SELECT COUNT(*)"}
-        # "Get everything from": "columns",
-        # "What is": ["the sum", "the max", "the min", "the average"]}
 
     def baseSQLQuery(self, choice):
         self.query += self.baseTree[choice]

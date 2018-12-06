@@ -40,10 +40,9 @@ class StructuredNLP():
 
         self.sqlBuilder = SqlBuilder(tableName)
         # on page load, return phraseTree["origin"]
-        self.phraseTree = {"origin": ["Get the", "How many " + tableName + " entries are there where", "What is", "Get everything from"],
+        self.phraseTree = {"origin": ["Get the", "How many " + tableName + " entries are there where", "What is"],
                       "Get the": "columns",
                       "How many " + tableName + " entries are there where":  "where",
-                      "Get everything from": "columns",
                       "What is": ["the sum of", "the max of", "the min of", "the average of"],
                       "the sum of": "agg",
                       "the max of": "agg",

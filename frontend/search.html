@@ -76,7 +76,6 @@ $(function() {
             url: "http://localhost:5000/get_options",
             data: {"search_text": selectedText},
             success: function(response) {
-                console.log(response);
                 setDropdownOptions(JSON.parse(response))
             },
             error: function(error) {
@@ -115,7 +114,6 @@ $(function() {
                 getOptionsToDisplay("origin", setDropdownOptions);
             },
             error: function(error) {
-                console.log("ERROR")
                 console.log(error)
             }
         });
@@ -127,12 +125,10 @@ $(function() {
           url: "http://localhost:5000/reset_query",
           success: function(response) {
               e.preventDefault()
-              console.log(JSON.parse(response));
               getOptionsToDisplay("origin", setDropdownOptions);
               $('#fixed-text').text("");
           },
           error: function(error) {
-              console.log("ERROR")
               console.log(error)
           }
       });
