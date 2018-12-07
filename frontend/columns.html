@@ -46,32 +46,24 @@
 <script>
 
 $(document).ready(function(){
-    setup = JSON.parse(getCookie("colData"));
-    populateColumnTable(setup[0], setup[1])
+    $.ajax({
+        url: 'http://localhost:5000/get_column_numerics',
+        type: 'GET',
+        success: function(response) {
+            console.log(response);
+            populateColumnTable(response);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    })
 });
 
-// from w3 https://www.w3schools.com/js/js_cookies.asp
-function getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
-}
 
 // server will spit back a list of all (column label, datatype) pairs
-function populateColumnTable(colLabels, isNumerics) {
-    $.each(colLabels, colIndex => {
-        var colLabel = colLabels[colIndex]
-        var isNumeric = isNumerics[colIndex]
+function populateColumnTable(colNumericList) {
+    $.each(colNumericList, colLabel => {
+        var isNumeric = colNumericList[colLabel]
 
         var row = `<tr id="${colLabel}-row">
               <td class='col-name'>${colLabel}</td>
@@ -98,8 +90,7 @@ function populateColumnTable(colLabels, isNumerics) {
  });
 
 $( '#done-col-select' ).click(function(event) {
-    tableName = getCookie("tableName");
-    var to_send = {"DB_table_name": tableName};
+    var to_send = {}
     $('[id$=-row] input:checked').each(function() { //for each checked function
         var colLabel = $(this).attr('name');
         

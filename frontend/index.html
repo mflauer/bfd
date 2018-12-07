@@ -21,8 +21,8 @@
         <fieldset>
             <input name="file" type="file" multiple>
         </fieldset>
-        <fieldset id="upload-btn-container">
-            <button id="upload-file-btn" type="button">Upload</button>
+        <fieldset class="centered-btn-container">
+            <button id="upload-file-btn" class="small-white-btn" type="button">Upload</button>
         </fieldset>
     </form>
 <script>
@@ -30,18 +30,27 @@ $(function() {
     $('#upload-file-btn').click(function() {
         console.log(new FormData($('#upload-file')))
         var form_data = new FormData($('#upload-file')[0]);
+        
         $.ajax({
             type: 'POST',
-            url: "http://localhost:5000/file_receiver",
-            data: form_data,
-            contentType: false,
-            cache: false,
-            processData: false,
+            url: "http://localhost:5000/table_name",
+            data: $('#table_name').val(),
             success: function(response) {
-                document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
-                document.cookie = "tableName=" + $('#table_name').val();
-                document.cookie = "colData=" + response;
-                window.location.href = "columns.html";
+                $.ajax({
+                    type: 'POST',
+                    url: "http://localhost:5000/file_receiver",
+                    data: form_data,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function(response) {
+                        console.log(response)
+                        window.location.href = response
+                    },
+                    error: function(error) {
+                        console.log(error)
+                    }
+                });
             },
             error: function(error) {
                 console.log(error)

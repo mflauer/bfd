@@ -92,12 +92,12 @@
     margin-bottom:10px;
 }
 
-#upload-btn-container {
+.centered-btn-container {
     text-align: center;
     margin-top: 30px;
 }
 
-#upload-file-btn{
+.small-white-btn{
     width: 100px;
     height: 30px;
     border: none;
