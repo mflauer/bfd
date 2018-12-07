@@ -1,63 +1,95 @@
 from flask import Flask, request, redirect
 from flask_cors import CORS
 import json
-from makedb import make_db_for_user, query_db
+from makedb import make_db_for_user, query_db, get_base_directory
 from StructuredNLP import StructuredNLP
+import os
+
 app = Flask(__name__)
 CORS(app)
 
-current_file_name = "received_file.csv"
 s = None
+fileNames = []
+columns_numeric = {}
+join_fields = None
+tableName = None
+
 
 @app.route("/run", methods=['POST'])
 def output():
     return "Hello Michelle!"
 
 
-@app.route('/file_receiver', methods=['POST'])
+@app.route('/file_saver', methods=['POST'])
+def file_saver():
+    global fileNames
+    base_directory = get_base_directory()
+    join = 2 == len(request.files.getlist("file"))
+    for file in request.files.getlist("file"):
+        fileNames.append(file.filename)
+        with open(os.path.join(base_directory, os.path.join("data_files", file.filename)), "wb") as storedFile:
+            lines = file.readlines()
+            if join:
+                first_line = lines[0]
+                headers = first_line.decode().strip().split(",")
+                rename_headers = map(lambda x: x + " (" + file + ")", headers)
+                lines[0] = ",".join(rename_headers)
+            storedFile.write(lines)
+    if join:
+        file_parser()
+        return "columns.html"
+    else:
+        return "joins.html"
+
+@app.route('/table_name', methods=['POST'])
+def table_name():
+    global tableName
+    tableName = request.form
+
+
+@app.route('/file_parser', methods=['GET'])
 def file_parser():
-    # for file in request.files.getlist("file"):
-    #   file is here!!!
-    f = request.files['file']
-    headers = None
-    isNumeric = []
-    with open(current_file_name, "wb") as write_f:
-        first = True
-        second = False
-        lines = f.readlines()
-        for line in lines:
-            if first:
-                headers = line.decode().strip().split(",")
-                first = False
-                second = True
-            elif second:
-                values = line.decode().strip().split(",")
-                for val in values:
-                    if is_number(val):
-                        isNumeric.append(True)
-                    else:
-                        isNumeric.append(False)
-                second = False
-            write_f.write(line)
-    response = json.dumps([headers, isNumeric])
-    return response
+    global fileNames, columns_numeric
+    base_directory = get_base_directory()
+    join_headers = {}
+
+    for file in fileNames:
+        isNumeric = []
+        with open(os.path.join(base_directory, os.path.join("data_files", file)), "r") as read_f:
+            headers = read_f.readline().decode().strip().split(",")
+            values = read_f.readline().decode().strip().split(",")
+            for val in values:
+                if is_number(val):
+                    isNumeric.append(True)
+                else:
+                    isNumeric.append(False)
+        join_headers[file] = headers
+
+        for index in range(len(headers)):
+            columns_numeric[headers[index] + " (" + file + ")"] = isNumeric[index]
+
+    return join_headers
+
+
+@app.route("/get_column_numeric", methods=['GET'])
+def get_column_numeric():
+    global columns_numeric
+    return columns_numeric
 
 
 @app.route("/parameter_receiver", methods=['POST'])
 def receive_parameters_and_make_DB():
+    global tableName, fileNames
     form_data = request.form
     parameter_dic = {}
-    tableName = form_data["DB_table_name"]
     for key in form_data:
-        if key == "DB_table_name":
-            continue
         value_list = form_data.getlist(key)
         value_list[0] = set(value_list[0].strip().split(", ")) if value_list[0] != "" else None
         value_list[1] = int(value_list[1]) if value_list[1] != "" else None
         value_list[2] = int(value_list[2]) if value_list[2] != "" else None
         parameter_dic[key[:-2]] = value_list
 
-    result, isResultNumeric = make_db_for_user(current_file_name, parameter_dic, tableName)
+    result, isResultNumeric = make_db_for_user(fileNames, parameter_dic, tableName)
     global s
     if not result:
         return "Parameters received, no rows matched specifications, no bfd created"
@@ -65,14 +97,18 @@ def receive_parameters_and_make_DB():
         s = StructuredNLP(tableName, result, isResultNumeric)
         return "Parameters received, bfd built"
 
+
 @app.route("/join_values", methods=['POST'])
 def join_values():
+    global join_fields, fileNames, columns_numeric
     form_data = request.form
-    j1 = form_data['j1']
-    j2 = form_data['j2']
-    print(j1)
-    print(j2)
+    j1 = form_data['j1'] + " (" + fileNames[0] + ")"
+    j2 = form_data['j2'] + " (" + fileNames[1] + ")"
+
+    join_fields = (j1, j2)
+    del columns_numeric[j2]
     return "Received merge parameters"
+
 
 @app.route("/run_query", methods=['POST'])
 def receive_query():
@@ -80,7 +116,6 @@ def receive_query():
     output = json.dumps(s.runQuery())
     s.resetQuery()
     return output
-
 
 
 def is_number(s):
