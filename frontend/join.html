@@ -18,44 +18,52 @@
     </div>
     <div id="join-container" class="row">
       <div class="col-xs-6">
-        <select id="table1" class="merge-col">
-          <option value="volvo">Volvo</option>
-          <option value="saab">Saab</option>
-          <option value="opel">Opel</option>
-          <option value="audi">Audi</option>
+        <select id="table-1" class="merge-col">
+          <!-- dynamically add options -->
         </select>
       </div>
       <div class="col-xs-6">
-        <select id="table2" class="merge-col">
-          <option value="volvo">Volvo</option>
-          <option value="saab">Saab</option>
-          <option value="opel">Opel</option>
-          <option value="audi">Audi</option>
+        <select id="table-2" class="merge-col">
+          <!-- dynamically add options -->
         </select>
       </div>
     </div>
 
     <button id="join-btn" type="button">Merge</button>
 <script>
+
+function populateDropdownOptions(options, tableNum) {
+    var dropdownElem = $('#table-' + tableNum)
+    for (var i=0; i<options.length; i++) {
+        var option = options[i]
+        dropdownElem.append('<option value="' + option + '">' + option + '</option>')
+    }
+}
+
 $(function() {
-    $('#upload-file-btn').click(function() {
-        console.log(new FormData($('#upload-file')))
-        var form_data = new FormData($('#upload-file')[0]);
+    // TODO get the columns
+    var table1Options = ['op1', 'op2'];
+    var table2Options = ['hiiiiiii', 'hello'];
+    populateDropdownOptions(table1Options, 1)
+    populateDropdownOptions(table2Options, 2)
+
+    $('#join-btn').click(function() {
+        var table1Col = $('#table-1').val()
+        var table2Col = $('#table-2').val()
+
         $.ajax({
+            url: 'http://localhost:5000/join_values',
+            data: {
+                'j1': table1Col,
+                'j2': table2Col
+            },
             type: 'POST',
-            url: "http://localhost:5000/file_receiver",
-            data: form_data,
-            contentType: false,
-            cache: false,
-            processData: false,
             success: function(response) {
-                document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
-                document.cookie = "tableName=" + $('#table_name').val();
-                document.cookie = "colData=" + response;
-                window.location.href = "columns.html";
+                console.log(response);
+                window.location.href = "columns.html"
             },
             error: function(error) {
-                console.log(error)
+                console.log(error);
             }
         });
     });

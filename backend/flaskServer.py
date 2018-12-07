@@ -65,7 +65,14 @@ def receive_parameters_and_make_DB():
         s = StructuredNLP(tableName, result, isResultNumeric)
         return "Parameters received, bfd built"
 
-
+@app.route("/join_values", methods=['POST'])
+def join_values():
+    form_data = request.form
+    j1 = form_data['j1']
+    j2 = form_data['j2']
+    print(j1)
+    print(j2)
+    return "Received merge parameters"
 
 @app.route("/run_query", methods=['POST'])
 def receive_query():
