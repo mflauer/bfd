@@ -79,7 +79,7 @@ def get_column_numeric():
 
 @app.route("/parameter_receiver", methods=['POST'])
 def receive_parameters_and_make_DB():
-    global tableName, fileNames
+    global tableName, fileNames, join_fields
     form_data = request.form
     parameter_dic = {}
     for key in form_data:
@@ -89,7 +89,7 @@ def receive_parameters_and_make_DB():
         value_list[2] = int(value_list[2]) if value_list[2] != "" else None
         parameter_dic[key[:-2]] = value_list
 
-    result, isResultNumeric = make_db_for_user(fileNames, parameter_dic, tableName)
+    result, isResultNumeric = make_db_for_user(fileNames, parameter_dic, tableName, join_fields)
     global s
     if not result:
         return "Parameters received, no rows matched specifications, no bfd created"
