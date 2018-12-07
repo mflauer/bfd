@@ -74,7 +74,7 @@ def file_parser():
         print(headers)
         print(isNumeric)
         for index in range(len(headers)):
-            columns_numeric[headers[index] + " (" + file + ")"] = isNumeric[index]
+            columns_numeric[headers[index]] = isNumeric[index]
 
     return json.dumps(join_headers)
 
@@ -82,15 +82,18 @@ def file_parser():
 @app.route("/get_column_numeric", methods=['GET'])
 def get_column_numeric():
     global columns_numeric
-    return columns_numeric
+    return json.dumps(columns_numeric)
 
 
-@app.route("/parameter_receiver", methods=['POST'])
+@app.route("/receive_parameters_and_make_DB", methods=['POST'])
 def receive_parameters_and_make_DB():
     global tableName, fileNames, join_fields
     form_data = request.form
+    print("FORM DATA")
+    print(form_data)
     parameter_dic = {}
     for key in form_data:
+        print(key)
         value_list = form_data.getlist(key)
         value_list[0] = set(value_list[0].strip().split(", ")) if value_list[0] != "" else None
         value_list[1] = int(value_list[1]) if value_list[1] != "" else None
@@ -110,8 +113,8 @@ def receive_parameters_and_make_DB():
 def join_values():
     global join_fields, fileNames, columns_numeric
     form_data = request.form
-    j1 = form_data['j1'] + " (" + fileNames[0] + ")"
-    j2 = form_data['j2'] + " (" + fileNames[1] + ")"
+    j1 = form_data['j1']
+    j2 = form_data['j2']
 
     join_fields = (j1, j2)
     del columns_numeric[j2]

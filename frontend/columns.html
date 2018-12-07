@@ -51,7 +51,7 @@ $(document).ready(function(){
         type: 'GET',
         success: function(response) {
             console.log(response);
-            populateColumnTable(response);
+            populateColumnTable(JSON.parse(response));
         },
         error: function(error) {
             console.log(error);
@@ -62,11 +62,16 @@ $(document).ready(function(){
 
 // server will spit back a list of all (column label, datatype) pairs
 function populateColumnTable(colNumericList) {
-    $.each(colNumericList, colLabel => {
-        var isNumeric = colNumericList[colLabel]
+    $.each(colNumericList, fullColLabel => {
+        var isNumeric = colNumericList[fullColLabel]
+        console.log(isNumeric)
+        
+        // replace last space with dash
+        var lastSpaceIndex = fullColLabel.lastIndexOf(' ')
+        var colLabel = fullColLabel.slice(0, lastSpaceIndex) + "-" + fullColLabel.slice(lastSpaceIndex+2,fullColLabel.length-1)
 
         var row = `<tr id="${colLabel}-row">
-              <td class='col-name'>${colLabel}</td>
+              <td class='col-name'>${fullColLabel}</td>
               <td class='check-data'>
                 <input id="${colLabel}-check" name="${colLabel}" type="checkbox">
               </td>
@@ -98,21 +103,25 @@ $( '#done-col-select' ).click(function(event) {
         var ub = $( '#' + colLabel + '-ub' ).val()
 
         var search = $( '#' + colLabel + '-search' ).val()
+
+        var lastDashIndex = colLabel.lastIndexOf('-')
+        var colLabel = colLabel.slice(0, lastDashIndex) + " (" + colLabel.slice(lastDashIndex+1,colLabel.length) + ")"
         to_send[colLabel] = [search, lb, ub]
     });
     
+    console.log(to_send)
     $.ajax({
-            url: 'http://localhost:5000/parameter_receiver',
-            data: to_send,
-            type: 'POST',
-            success: function(response) {
-                console.log(response);
-                window.location.href = "search.html"
-            },
-            error: function(error) {
-                console.log(error);
-            }
-        });
+        url: 'http://localhost:5000/receive_parameters_and_make_DB',
+        data: to_send,
+        type: 'POST',
+        success: function(response) {
+            console.log(response);
+            window.location.href = "search.html"
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
 })
 
 
