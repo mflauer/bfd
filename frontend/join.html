@@ -51,7 +51,7 @@ function populateDropdownOptions(tableNum, fileName, options) {
 
 $(function() {
     $.ajax({
-        url: 'http://localhost:5000/file_column_values',
+        url: 'http://localhost:5000/file_parser',
         type: 'GET',
         success: function(response) {
             console.log(response);
