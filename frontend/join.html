@@ -28,11 +28,20 @@
         </select>
       </div>
     </div>
-
-    <button id="join-btn" type="button">Merge</button>
+    <div class='centered-btn-container'>
+        <button id="join-btn" class="small-white-btn" type="button">Merge</button>
+    </div>
 <script>
 
-function populateDropdownOptions(options, tableNum) {
+function setJoinDataColumns(fileColDict) {
+    var tableNum = 1
+    for (var fileName in fileColDict) {
+        populateDropdownOptions(tableNum, fileName, fileColDict[fileName])
+        tableNum++;
+    }
+}
+
+function populateDropdownOptions(tableNum, fileName, options) {
     var dropdownElem = $('#table-' + tableNum)
     for (var i=0; i<options.length; i++) {
         var option = options[i]
@@ -41,11 +50,17 @@ function populateDropdownOptions(options, tableNum) {
 }
 
 $(function() {
-    // TODO get the columns
-    var table1Options = ['op1', 'op2'];
-    var table2Options = ['hiiiiiii', 'hello'];
-    populateDropdownOptions(table1Options, 1)
-    populateDropdownOptions(table2Options, 2)
+    $.ajax({
+        url: 'http://localhost:5000/file_column_values',
+        type: 'GET',
+        success: function(response) {
+            console.log(response);
+            setJoinDataColumns(response);
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    })
 
     $('#join-btn').click(function() {
         var table1Col = $('#table-1').val()
