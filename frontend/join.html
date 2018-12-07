@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>bfd</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Oswald|Playfair+Display|Nunito:300" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body id="join-body" class="blue-body">
+    <div id="join-header">
+        <h2>Merge Two Tables</h2>
+        <p>How they are supposed to do this</p>
+    </div>
+    <div id="join-container" class="row">
+      <div class="col-xs-6">
+        <select id="table1" class="merge-col">
+          <option value="volvo">Volvo</option>
+          <option value="saab">Saab</option>
+          <option value="opel">Opel</option>
+          <option value="audi">Audi</option>
+        </select>
+      </div>
+      <div class="col-xs-6">
+        <select id="table2" class="merge-col">
+          <option value="volvo">Volvo</option>
+          <option value="saab">Saab</option>
+          <option value="opel">Opel</option>
+          <option value="audi">Audi</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="join-btn" type="button">Merge</button>
+<script>
+$(function() {
+    $('#upload-file-btn').click(function() {
+        console.log(new FormData($('#upload-file')))
+        var form_data = new FormData($('#upload-file')[0]);
+        $.ajax({
+            type: 'POST',
+            url: "http://localhost:5000/file_receiver",
+            data: form_data,
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function(response) {
+                document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+                document.cookie = "tableName=" + $('#table_name').val();
+                document.cookie = "colData=" + response;
+                window.location.href = "columns.html";
+            },
+            error: function(error) {
+                console.log(error)
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>
