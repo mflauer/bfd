@@ -5,9 +5,14 @@ import os
 
 
 # inputs user expects to query over
-def make_db_for_user(original_csv: str, inputs: dict, table_name: str = "test"):
+def make_db_for_user(fileNames, inputs, table_name: str = "test", join=None):
     # pull out only the columns relevant for their inputs
-    original_df = pd.read_csv(original_csv)
+    if join is not None:
+        first_df = pd.read_csv(os.path.join(get_base_directory(), os.path.join("data_files", fileNames[0])))
+        second_df = pd.read_csv(os.path.join(get_base_directory(), os.path.join("data_files", fileNames[1])))
+        original_df = first_df.merge(second_df, how="inner", left_on=join[0], right_on=join[1])
+    else:
+        original_df = pd.read_csv(os.path.join(get_base_directory(), os.path.join("data_files", fileNames[0])))
 
     colInputs = list(inputs.keys()) # the inputs that are directly names of columns
     colFilteredDf = original_df[colInputs]
