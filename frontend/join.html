@@ -55,7 +55,8 @@ $(function() {
         type: 'GET',
         success: function(response) {
             console.log(response);
-            setJoinDataColumns(response);
+            console.log(JSON.parse(response))
+            setJoinDataColumns(JSON.parse(response));
         },
         error: function(error) {
             console.log(error);

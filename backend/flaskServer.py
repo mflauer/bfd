@@ -26,25 +26,31 @@ def file_saver():
     base_directory = get_base_directory()
     join = 2 == len(request.files.getlist("file"))
     for file in request.files.getlist("file"):
-        fileNames.append(file.filename)
+        fileName = file.filename
+        fileNames.append(fileName)
         with open(os.path.join(base_directory, os.path.join("data_files", file.filename)), "wb") as storedFile:
             lines = file.readlines()
             if join:
                 first_line = lines[0]
                 headers = first_line.decode().strip().split(",")
-                rename_headers = map(lambda x: x + " (" + file + ")", headers)
-                lines[0] = ",".join(rename_headers)
-            storedFile.write(lines)
+                rename_headers = map(lambda x: x + " (" + fileName + ")", headers)
+                joined_header = ",".join(rename_headers) + "\n"
+                lines[0] = joined_header.encode()
+
+            for line in lines:
+                storedFile.write(line)
+
     if join:
+        return "join.html"
+    else:
         file_parser()
         return "columns.html"
-    else:
-        return "joins.html"
 
 @app.route('/table_name', methods=['POST'])
 def table_name():
     global tableName
     tableName = request.form
+    return "Received table name"
 
 
 @app.route('/file_parser', methods=['GET'])
@@ -56,8 +62,8 @@ def file_parser():
     for file in fileNames:
         isNumeric = []
         with open(os.path.join(base_directory, os.path.join("data_files", file)), "r") as read_f:
-            headers = read_f.readline().decode().strip().split(",")
-            values = read_f.readline().decode().strip().split(",")
+            headers = read_f.readline().strip().split(",")
+            values = read_f.readline().strip().split(",")
             for val in values:
                 if is_number(val):
                     isNumeric.append(True)
@@ -65,10 +71,12 @@ def file_parser():
                     isNumeric.append(False)
         join_headers[file] = headers
 
+        print(headers)
+        print(isNumeric)
         for index in range(len(headers)):
             columns_numeric[headers[index] + " (" + file + ")"] = isNumeric[index]
 
-    return join_headers
+    return json.dumps(join_headers)
 
 
 @app.route("/get_column_numeric", methods=['GET'])
