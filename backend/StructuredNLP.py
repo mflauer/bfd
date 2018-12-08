@@ -37,22 +37,38 @@ class StructuredNLP():
         self.firstColumn = True
         self.allColumns = colLabels
         self.isColNumeric = isColNumeric
+        self.returned_digit = False
+        self.order_by = False
 
         self.sqlBuilder = SqlBuilder(tableName)
         # on page load, return phraseTree["origin"]
-        self.phraseTree = {"origin": ["Get the", "How many " + tableName + " entries are there where", "What is"],
-                      "Get the": "columns",
-                      "How many " + tableName + " entries are there where":  "where",
-                      "What is": ["the sum of", "the max of", "the min of", "the average of"],
-                      "the sum of": "agg",
-                      "the max of": "agg",
-                      "the min of": "agg",
-                      "the average of": "agg", }
+        self.phraseTree = {"origin": ["Get the", "How many " + tableName + " entries are there where",
+                                      "What is", "What are the top", "What are the bottom"],
+                        "Get the": "columns",
+                        "How many " + tableName + " entries are there where":  "where",
+                        "What is": ["the sum of", "the max of", "the min of", "the average of"],
+                        "What are the top": "integer",
+                        "What are the bottom": "integer",
+                        "the sum of": "agg",
+                        "the max of": "agg",
+                        "the min of": "agg",
+                        "the average of": "agg", }
 
 
     def updatePossibleSelections(self, choice):
         if choice == "where":
             self.isPastWhere = True
+
+        if self.returned_digit:
+            self.sqlBuilder.setLimit(choice.split(" ")[0])
+            self.returned_digit = False
+            self.order_by = True
+            return self.getNumericColumns()
+
+        if self.order_by:
+            self.order_by = False
+            self.sqlBuilder.insertColumn(choice)
+            return []
 
         if self.prevAgg:
             self.sqlBuilder.addAggregate(self.prevAgg, choice.split(" ")[0])
@@ -69,7 +85,7 @@ class StructuredNLP():
             if not self.returnedColumn:
                 self.returnedColumn = True
                 self.sqlBuilder.addColumnValue(choice)
-                return self.appendWith(self.prependWithAnd(self.getAllColumns()), "is")
+                return self.appendWith(self.prependWith(self.getAllColumns(), "and"), "is")
             else:  # we are filling in WHERE self.currentColumns [is/isgreater than????]
                 self.returnedColumn = False
                 self.sqlBuilder.addColumn(choice)
@@ -78,26 +94,32 @@ class StructuredNLP():
             if self.returnedColumn:
                 # return [AND + columns..., WHERE]
                 self.sqlBuilder.addColumn(choice)
-                return ["where"] + self.prependWithAnd(self.getAllColumns())
+                return ["where"] + self.prependWith(self.getAllColumns(), "and")
 
             else:
                 phraseTreeValue = self.phraseTree[choice]
 
-                if phraseTreeValue == "agg":
-                    # self.sqlBuilder. TODO
+                if phraseTreeValue == "integer":
+                    self.sqlBuilder.baseSQLQuery(choice)
+                    integers = ["3", "5", "10", "50", "100"]
+                    self.returned_digit = True
+                    return self.appendWith(integers, self.tableName + " entries by")
+
+                elif phraseTreeValue == "agg":
                     self.prevAgg = choice.split(" ")[1]
                     return self.appendWith(self.getNumericColumns(), "where")
 
-                if phraseTreeValue == "where":
+                elif phraseTreeValue == "where":
                     self.sqlBuilder.baseSQLQuery(choice)
                     return self.updatePossibleSelections(phraseTreeValue)
 
-                if phraseTreeValue == "columns":
+                elif phraseTreeValue == "columns":
                     self.sqlBuilder.baseSQLQuery(choice)
                     self.returnedColumn = True
                     return self.getAllColumns()
+
                 else:
-                    return self.phraseTree[choice] # very first step only
+                    return self.phraseTree[choice]
 
 
     def getAllColumns(self):
@@ -118,8 +140,8 @@ class StructuredNLP():
         queryResult = query_db(query, self.tableName)
         return list(set([str(item) for sublist in queryResult for item in sublist]))
 
-    def prependWithAnd(self, allColumns):
-        return ['and {0}'.format(i) for i in allColumns]
+    def prependWith(self, allColumns, prependage):
+        return ['{} {}'.format(prependage, i) for i in allColumns]
 
     def appendWith(self, allColumns, appendage):
         return ['{} {}'.format(i, appendage) for i in allColumns]

@@ -2,23 +2,29 @@
 class SqlBuilder():
 
     def __init__(self, tableName):
-        self.query = ""
+        self.query = ''
         self.tableName = tableName
         self.didHitWhere = False
 
         self.baseTree = {"Get the": "SELECT ",
-                    "How many " + tableName + " entries are there where": "SELECT COUNT(*)"}
+                        "How many " + tableName + " entries are there where": "SELECT COUNT(*)",
+                        "What are the top": 'SELECT * FROM ' + tableName + ' ORDER BY {col} DESC',
+                        "What are the bottom": "SELECT * FROM " + tableName + " ORDER BY {col} ASC"}
 
     def baseSQLQuery(self, choice):
         self.query += self.baseTree[choice]
+
+    def setLimit(self, limit):
+        self.query += " LIMIT " + str(limit)
+
+    def insertColumn(self, col):
+        self.query = self.query.format(col=col)
 
     def addAggregate(self, aggType, column):
         aggSQL = aggType
         if aggType == "average":
             aggSQL = "avg"
 
-        print(aggType)
-        print(column)
         self.query = "SELECT " + aggSQL + "(" + column + ")"
 
     def hitWhere(self):

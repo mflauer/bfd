@@ -51,24 +51,26 @@ def make_db_for_user(file_names, inputs, table_name: str = "test", join=None):
         colHeaders += ", '" + inp + "' " + data_type
         colIsNumeric.append(isNumeric)
 
-    # go from our customized dataframe to db file
+    colHeaders = colHeaders[2:]
 
+    # go from our customized dataframe to db file
     directory = os.path.join(get_base_directory(), "data_files/")
     conn = sqlite3.connect(directory + table_name + ".db")
     with conn:
         cur = conn.cursor()
         cur.execute("DROP TABLE IF EXISTS {tablen}".format(tablen=table_name))
-        cur.execute("CREATE TABLE {tablen}(id INTEGER PRIMARY KEY{headers})".format(tablen=table_name, headers=colHeaders))
+        cur.execute("CREATE TABLE {tablen}({headers})".format(tablen=table_name, headers=colHeaders))
 
-        for index, row in finalDf.iterrows():
-            rowVal = str(index)
+        for _, row in finalDf.iterrows():
+            rowVal = ""
             for colLabel in list(finalDf):
                 currentVal = row[colLabel]
                 if numericCols[colLabel]:
                     toAdd = str(currentVal).lstrip().strip() if not pd.isna(currentVal) else str(0)
                 else:
                     toAdd = '"' + str(currentVal).lstrip().strip() + '"' if not pd.isna(currentVal) else '""'
-                rowVal += "," + toAdd
+                rowVal += toAdd + ","
+            rowVal = rowVal[:-1] # remove trailing comma
             cur.execute("INSERT INTO {tablen} VALUES({val})".format(tablen=table_name, val=rowVal))
 
     # return new db customized for them
