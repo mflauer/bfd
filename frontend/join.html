@@ -54,8 +54,6 @@ $(function() {
         url: 'http://localhost:5000/file_parser',
         type: 'GET',
         success: function(response) {
-            console.log(response);
-            console.log(JSON.parse(response))
             setJoinDataColumns(JSON.parse(response));
         },
         error: function(error) {
@@ -75,7 +73,6 @@ $(function() {
             },
             type: 'POST',
             success: function(response) {
-                console.log(response);
                 window.location.href = "columns.html"
             },
             error: function(error) {

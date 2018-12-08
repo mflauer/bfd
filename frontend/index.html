@@ -26,9 +26,21 @@
         </fieldset>
     </form>
 <script>
+
+$(document).ready(function(){
+    $.ajax({
+        url: 'http://localhost:5000/reset_state',
+        type: 'POST',
+        success: function(response) {
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    })
+});
+
 $(function() {
     $('#upload-file-btn').click(function() {
-        console.log(new FormData($('#upload-file')))
         var form_data = new FormData($('#upload-file')[0]);
         
         $.ajax({
@@ -44,7 +56,6 @@ $(function() {
                     cache: false,
                     processData: false,
                     success: function(response) {
-                        console.log(response)
                         window.location.href = response
                     },
                     error: function(error) {

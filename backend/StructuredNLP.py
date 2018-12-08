@@ -113,6 +113,8 @@ class StructuredNLP():
     def getColumnValues(self, columnString):
         column = columnString.split(" ")[-2]
         query = "SELECT " + column + " FROM " + self.tableName + ";"
+        print(query)
+        print(columnString)
         queryResult = query_db(query, self.tableName)
         return list(set([str(item) for sublist in queryResult for item in sublist]))
 

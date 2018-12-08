@@ -8,11 +8,23 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-s = None
-fileNames = []
-columns_numeric = {}
-join_fields = None
-tableName = None
+S_NLP = None
+FILENAMES = []
+COLUMNS_NUMERIC = {}
+JOIN_FIELDS = None
+TABLENAME = None
+
+
+@app.route("/reset_state", methods=['POST'])
+def reset_state():
+    global S_NLP, FILENAMES, COLUMNS_NUMERIC, JOIN_FIELDS, TABLENAME
+    S_NLP = None
+    FILENAMES = []
+    COLUMNS_NUMERIC = {}
+    JOIN_FIELDS = None
+    TABLENAME = None
+    return "State Reset"
+
 
 
 @app.route("/run", methods=['POST'])
@@ -22,18 +34,19 @@ def output():
 
 @app.route('/file_saver', methods=['POST'])
 def file_saver():
-    global fileNames
+    global FILENAMES
     base_directory = get_base_directory()
     join = 2 == len(request.files.getlist("file"))
     for file in request.files.getlist("file"):
-        fileName = file.filename
-        fileNames.append(fileName)
-        with open(os.path.join(base_directory, os.path.join("data_files", file.filename)), "wb") as storedFile:
+        fileLocation = "bfd_" + file.filename
+        fileName = file.filename.split(".")[-2]
+        FILENAMES.append((fileLocation, fileName))
+        with open(os.path.join(base_directory, os.path.join("data_files", fileLocation)), "wb") as storedFile:
             lines = file.readlines()
             if join:
                 first_line = lines[0]
                 headers = first_line.decode().strip().split(",")
-                rename_headers = map(lambda x: x + " (" + fileName + ")", headers)
+                rename_headers = map(lambda x: x + "_" + fileName, headers)
                 joined_header = ",".join(rename_headers) + "\n"
                 lines[0] = joined_header.encode()
 
@@ -48,20 +61,20 @@ def file_saver():
 
 @app.route('/table_name', methods=['POST'])
 def table_name():
-    global tableName
-    tableName = request.form
+    global TABLENAME
+    TABLENAME = list(request.form.keys())[0]
     return "Received table name"
 
 
 @app.route('/file_parser', methods=['GET'])
 def file_parser():
-    global fileNames, columns_numeric
+    global FILENAMES, COLUMNS_NUMERIC
     base_directory = get_base_directory()
     join_headers = {}
 
-    for file in fileNames:
+    for fileLocation, fileName in FILENAMES:
         isNumeric = []
-        with open(os.path.join(base_directory, os.path.join("data_files", file)), "r") as read_f:
+        with open(os.path.join(base_directory, os.path.join("data_files", fileLocation)), "r") as read_f:
             headers = read_f.readline().strip().split(",")
             values = read_f.readline().strip().split(",")
             for val in values:
@@ -69,63 +82,58 @@ def file_parser():
                     isNumeric.append(True)
                 else:
                     isNumeric.append(False)
-        join_headers[file] = headers
+        join_headers[fileName] = headers
 
-        print(headers)
-        print(isNumeric)
         for index in range(len(headers)):
-            columns_numeric[headers[index]] = isNumeric[index]
+            COLUMNS_NUMERIC[headers[index]] = isNumeric[index]
 
     return json.dumps(join_headers)
 
 
 @app.route("/get_column_numeric", methods=['GET'])
 def get_column_numeric():
-    global columns_numeric
-    return json.dumps(columns_numeric)
+    global COLUMNS_NUMERIC
+    return json.dumps(COLUMNS_NUMERIC)
 
 
 @app.route("/receive_parameters_and_make_DB", methods=['POST'])
 def receive_parameters_and_make_DB():
-    global tableName, fileNames, join_fields
+    global TABLENAME, FILENAMES, JOIN_FIELDS
     form_data = request.form
-    print("FORM DATA")
-    print(form_data)
     parameter_dic = {}
     for key in form_data:
-        print(key)
         value_list = form_data.getlist(key)
         value_list[0] = set(value_list[0].strip().split(", ")) if value_list[0] != "" else None
         value_list[1] = int(value_list[1]) if value_list[1] != "" else None
         value_list[2] = int(value_list[2]) if value_list[2] != "" else None
         parameter_dic[key[:-2]] = value_list
 
-    result, isResultNumeric = make_db_for_user(fileNames, parameter_dic, tableName, join_fields)
-    global s
+    result, isResultNumeric = make_db_for_user(FILENAMES, parameter_dic, TABLENAME, JOIN_FIELDS)
+    global S_NLP
     if not result:
         return "Parameters received, no rows matched specifications, no bfd created"
     else:
-        s = StructuredNLP(tableName, result, isResultNumeric)
+        S_NLP = StructuredNLP(TABLENAME, result, isResultNumeric)
         return "Parameters received, bfd built"
 
 
 @app.route("/join_values", methods=['POST'])
 def join_values():
-    global join_fields, fileNames, columns_numeric
+    global JOIN_FIELDS, COLUMNS_NUMERIC
     form_data = request.form
     j1 = form_data['j1']
     j2 = form_data['j2']
 
-    join_fields = (j1, j2)
-    del columns_numeric[j2]
+    JOIN_FIELDS = (j1, j2)
+    del COLUMNS_NUMERIC[j2]
     return "Received merge parameters"
 
 
 @app.route("/run_query", methods=['POST'])
 def receive_query():
-    global s
-    output = json.dumps(s.runQuery())
-    s.resetQuery()
+    global S_NLP
+    output = json.dumps(S_NLP.runQuery())
+    S_NLP.resetQuery()
     return output
 
 
@@ -138,15 +146,15 @@ def is_number(s):
 
 @app.route("/reset_query", methods=['POST'])
 def reset_query():
-    global s
-    return json.dumps(s.resetQuery())
+    global S_NLP
+    return json.dumps(S_NLP.resetQuery())
 
 
 @app.route("/get_options", methods=['POST'])
 def get_options():
     sql_query = request.form['search_text']
-    global s
-    return json.dumps(s.updatePossibleSelections(sql_query))
+    global S_NLP
+    return json.dumps(S_NLP.updatePossibleSelections(sql_query))
 
 
 # @app.route('/getpythondata')

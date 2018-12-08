@@ -50,7 +50,6 @@ $(document).ready(function(){
         url: 'http://localhost:5000/get_column_numeric',
         type: 'GET',
         success: function(response) {
-            console.log(response);
             populateColumnTable(JSON.parse(response));
         },
         error: function(error) {
@@ -62,16 +61,10 @@ $(document).ready(function(){
 
 // server will spit back a list of all (column label, datatype) pairs
 function populateColumnTable(colNumericList) {
-    $.each(colNumericList, fullColLabel => {
-        var isNumeric = colNumericList[fullColLabel]
-        console.log(isNumeric)
-        
-        // replace last space with dash
-        var lastSpaceIndex = fullColLabel.lastIndexOf(' ')
-        var colLabel = fullColLabel.slice(0, lastSpaceIndex) + "-" + fullColLabel.slice(lastSpaceIndex+2,fullColLabel.length-1)
-
+    $.each(colNumericList, colLabel => {
+        var isNumeric = colNumericList[colLabel];
         var row = `<tr id="${colLabel}-row">
-              <td class='col-name'>${fullColLabel}</td>
+              <td class='col-name'>${colLabel}</td>
               <td class='check-data'>
                 <input id="${colLabel}-check" name="${colLabel}" type="checkbox">
               </td>
@@ -84,7 +77,7 @@ function populateColumnTable(colNumericList) {
                 Less than
                 <input id="${colLabel}-ub" class="range-bound-box" type="text" ${isNumeric ? "" : "disabled"}>
               </td>
-            </tr>`
+            </tr>`;
 
         $("#all-col-table").append(row)
     })
@@ -95,27 +88,21 @@ function populateColumnTable(colNumericList) {
  });
 
 $( '#done-col-select' ).click(function(event) {
-    var to_send = {}
+    var to_send = {};
     $('[id$=-row] input:checked').each(function() { //for each checked function
         var colLabel = $(this).attr('name');
-        
-        var lb = $( '#' + colLabel + '-lb' ).val()
-        var ub = $( '#' + colLabel + '-ub' ).val()
+        var lb = $(document.getElementById(colLabel + '-lb')).val();
+        var ub = $(document.getElementById(colLabel + '-ub')).val();
+        var search = $(document.getElementById(colLabel + '-search')).val();
 
-        var search = $( '#' + colLabel + '-search' ).val()
-
-        var lastDashIndex = colLabel.lastIndexOf('-')
-        var colLabel = colLabel.slice(0, lastDashIndex) + " (" + colLabel.slice(lastDashIndex+1,colLabel.length) + ")"
         to_send[colLabel] = [search, lb, ub]
     });
     
-    console.log(to_send)
     $.ajax({
         url: 'http://localhost:5000/receive_parameters_and_make_DB',
         data: to_send,
         type: 'POST',
         success: function(response) {
-            console.log(response);
             window.location.href = "search.html"
         },
         error: function(error) {
