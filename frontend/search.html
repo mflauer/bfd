@@ -56,7 +56,7 @@ $(function() {
       };
     };
 
-    function setDropdownOptions(options) {
+    function setDropdownOptions(options, focus=true) {
       $("#the-basics .typeahead").typeahead("destroy");
       $('#the-basics .typeahead').typeahead({
           hint: true,
@@ -68,15 +68,18 @@ $(function() {
           limit: 5,
           source: substringMatcher(options),
         }).focus();
+      if (!focus){
+          $('#search-bfd-btn').focus();
+      }
     }
 
-    function getOptionsToDisplay(selectedText, setDropdownOptions) {
+    function getOptionsToDisplay(selectedText, setDropdownOptions, focus=true) {
       $.ajax({
             type: 'POST',
             url: "http://localhost:5000/get_options",
             data: {"search_text": selectedText},
             success: function(response) {
-                setDropdownOptions(JSON.parse(response))
+                setDropdownOptions(JSON.parse(response), focus)
             },
             error: function(error) {
                 console.log(error)
@@ -111,7 +114,7 @@ $(function() {
             success: function(response) {
                 e.preventDefault()
                 addResultsRows(JSON.parse(response));
-                getOptionsToDisplay("origin", setDropdownOptions);
+                getOptionsToDisplay("origin", setDropdownOptions, false);
             },
             error: function(error) {
                 console.log(error)
@@ -134,9 +137,6 @@ $(function() {
       });
     });
 
-    // on page load
-    getOptionsToDisplay("origin", setDropdownOptions);
-
     $('.typeahead').on('typeahead:selected', function(evt, item) {
       // add text to div before search box
       var currentFixedText = $('#fixed-text').text();
@@ -144,7 +144,20 @@ $(function() {
       $('.typeahead').typeahead('val','')
  
       getOptionsToDisplay(item, setDropdownOptions);
-  })
+    });
+
+    // on page load
+    $.ajax({
+          type: 'POST',
+          url: "http://localhost:5000/reset_query",
+          success: function(response) {
+              getOptionsToDisplay("origin", setDropdownOptions);
+              $('#fixed-text').text("");
+          },
+          error: function(error) {
+              console.log(error)
+          }
+      });
 
 
 
