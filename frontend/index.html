@@ -13,13 +13,14 @@
 </head>
 <body id="landing-body" class="blue-body">
     <h1 id="landing-title">WELCOME TO BFD</h1>
-    <p id="landing-desc">Say something here about what this is actually for and all that</p>
+    <p id="landing-desc">The Big Friendly Database system allows you to answer questions about your data. We will first create a new database with only the data that matters to you. Start by choosing a name for your custom database, and uploading one or two .csv files that you would like to analyze.</p>
     <form id="upload-file" method="post" enctype="multipart/form-data">
         <fieldset>
-            Database Name: <input id="table_name" type="text" value="BFD"><br>
+            Database Name: <input id="table_name" type="text" placeholder="Your Name Here"><br>
         </fieldset>
         <fieldset>
             <input name="file" type="file" multiple>
+            <p class="tips">To select multiple files, use Control+Click for a Windows machine, or Command+Click for a Mac.</p>
         </fieldset>
         <fieldset class="centered-btn-container">
             <button id="upload-file-btn" class="small-white-btn" type="button">Upload</button>

@@ -2,6 +2,10 @@
     background: #4682b4;
 }
 
+.tips {
+    font-size:12px;
+}
+
 #landing-title {
     text-align: center;
     color: white;
@@ -16,7 +20,7 @@
 }
 
 #landing-desc {
-    text-align: center;
+    text-align: left;
     max-width: 70%;
     margin: auto;
     color: lightgray;
