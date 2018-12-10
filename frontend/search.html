@@ -28,9 +28,12 @@
     <div id="results-generator-text">
       <!-- text dynamically added here -->
     </div>
-    <table id="query-results-table" class="table table-bordered table-responsive-md table-striped text-center">
-      <!-- dynamically generated rows will go here -->
-    </table>
+    <div id="results-table-container">
+      <table id="query-results-table" class="table table-bordered table-responsive-md table-striped text-center">
+        <!-- dynamically generated rows will go here -->
+      </table>
+    </div>
+  </div>
 <script>
 $(function() {
 
@@ -87,12 +90,22 @@ $(function() {
         });
     }
 
+    function addResultsHeaders(headers) {
+      var headerHTML = '<tr class="header-row">'
+      for (var c=0; c<headers.length; c++) {
+        colValue = headers[c]
+        headerHTML = headerHTML.concat(`<th class="text-center">${colValue}</th>`)
+      }
+      headerHTML = headerHTML.concat('</tr>')
+
+      $("#query-results-table").append(headerHTML)
+    }
+
     function addResultsRows(results) {
       var currentFixedText = $('#fixed-text').text();
       $('#results-generator-text').text("You searched for:" + currentFixedText);
       $('#fixed-text').text("");
 
-      $("#query-results-table").empty();
       for (var i=0; i<results.length; i++) {
         rowHTML = '<tr class="result-row">'
         
@@ -113,7 +126,12 @@ $(function() {
             url: "http://localhost:5000/run_query",
             success: function(response) {
                 e.preventDefault()
-                addResultsRows(JSON.parse(response));
+                $("#query-results-table").empty();
+
+                res = JSON.parse(response)
+                addResultsHeaders(res[0])
+                addResultsRows(res[1])
+
                 getOptionsToDisplay("origin", setDropdownOptions, false);
             },
             error: function(error) {

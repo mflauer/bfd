@@ -14,7 +14,7 @@
     font-size:80px;
 }
 
-#column-title {
+.midsize-title {
     font-family: 'Oswald', sans-serif;
     font-size:40px;
 }
@@ -27,9 +27,19 @@
     font-size: 20px;
 }
 
+.title-desc {
+    text-align: left;
+    max-width: 70%;
+    margin: auto;
+}
+
 #landing-body>form{
     background: #4682b4;
     font-size: 16px;
+}
+
+#join-body {
+    margin: 100px 150px 0px 150px;
 }
 
 .col-name {
@@ -51,6 +61,10 @@
 #col-header-table {
     width: 96vw;
     margin: auto;
+}
+
+#column-desc {
+    margin-bottom: 20px;
 }
 
 #all-col-table-container {
@@ -174,9 +188,15 @@
     margin: 20px;
 }
 
+#results-table-container {
+    width:96vw;
+    height:65vh;
+    margin: 0px auto;
+    overflow:scroll;
+}
+
 #query-results-table {
-    width: 96vw;
-    margin: auto;
+    width:100%;
 }
 
 .tt-menu {

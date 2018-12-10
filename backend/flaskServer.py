@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect
 from flask_cors import CORS
 import json
-from makedb import make_db_for_user, query_db, get_base_directory
+from makedb import make_db_for_user, get_base_directory
 from StructuredNLP import StructuredNLP
 import os
 
@@ -62,7 +62,8 @@ def file_saver():
 @app.route('/table_name', methods=['POST'])
 def table_name():
     global TABLENAME
-    TABLENAME = list(request.form.keys())[0]
+    formName = list(request.form.keys())
+    TABLENAME = formName[0] if len(formName) > 0 else "YourTable"
     return "Received table name"
 
 

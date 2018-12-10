@@ -77,12 +77,15 @@ def make_db_for_user(file_names, inputs, table_name: str = "test", join=None):
     return colInputs, colIsNumeric
 
 
-def query_db(sql_query, table_name):
+def query_db(sql_query, table_name, return_headers):
     directory = os.path.join(get_base_directory(), "data_files/")
     conn = sqlite3.connect(directory + table_name + ".db")
     cur = conn.cursor()
     results = cur.execute(sql_query).fetchall()
-    return results
+    if return_headers:
+        desc = [tuple(header for header in headerList if header is not None) for headerList in cur.description]
+        return (desc, results)
+    return results 
 
 
 # used for testing purposes

@@ -137,7 +137,7 @@ class StructuredNLP():
         query = "SELECT " + column + " FROM " + self.tableName + ";"
         print(query)
         print(columnString)
-        queryResult = query_db(query, self.tableName)
+        queryResult = query_db(query, self.tableName, False)
         return list(set([str(item) for sublist in queryResult for item in sublist]))
 
     def prependWith(self, allColumns, prependage):
@@ -148,7 +148,7 @@ class StructuredNLP():
 
     def runQuery(self):
         print(self.sqlBuilder.getQuery())
-        return query_db(self.sqlBuilder.getQuery(), self.tableName)
+        return query_db(self.sqlBuilder.getQuery(), self.tableName, True)
 
     def resetQuery(self):
         self.isPastWhere = False
