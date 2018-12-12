@@ -1,9 +1,9 @@
 # bfd
-##Setup
+## Setup
 BFD was built with Python 3.7, although it should work with any version of Python 3. 
 
 To set up, first run the command:
-```pip install -r requirments.txt```
+```pip install -r requirements.txt```
 
 This will download and install flask.
 
