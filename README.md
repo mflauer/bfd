@@ -12,8 +12,7 @@ This will download and install flask.
 To run locally, first start the flask server by running the command 
 ```python3 backend/flaskServer.py```
 
-From here, simply open up a web browser and navigate to (preferably from Google Chrome)
-http://localhost:63342/bfd/frontend/index.html
+From here, simply open up a web browser (preferably from Google Chrome) and open frontend/index.html.
 
 At this point simply upload the file you're interested in and follow the instructions that appear.
 
