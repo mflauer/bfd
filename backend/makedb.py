@@ -11,17 +11,11 @@ def make_db_for_user(file_names, inputs, table_name: str = "test", join=None):
         first_df = pd.read_csv(os.path.join(get_base_directory(), os.path.join("data_files", file_names[0][0])))
         second_df = pd.read_csv(os.path.join(get_base_directory(), os.path.join("data_files", file_names[1][0])))
         original_df = first_df.merge(second_df, how="inner", left_on=join[0], right_on=join[1])
-
-        print(first_df)
-        print(second_df)
-        print(original_df)
     else:
         original_df = pd.read_csv(os.path.join(get_base_directory(), os.path.join("data_files", file_names[0][0])))
 
-    print(inputs.keys())
     colInputs = list(inputs.keys()) # the inputs that are directly names of columns
     colFilteredDf = original_df[colInputs]
-    print(colFilteredDf)
 
     # do more granular filtering (more specific than just column level)
     finalDf = colFilteredDf.copy()
@@ -48,7 +42,7 @@ def make_db_for_user(file_names, inputs, table_name: str = "test", join=None):
             data_type = "FLOAT"
         else:
             data_type = "TEXT"
-        colHeaders += ", '" + inp + "' " + data_type
+        colHeaders += ', "' + inp + '" ' + data_type
         colIsNumeric.append(isNumeric)
 
     colHeaders = colHeaders[2:]
@@ -93,8 +87,7 @@ def read_file(table_name):
     directory = os.path.join(get_base_directory(), "data_files/")
     conn = sqlite3.connect(directory + table_name + ".db")
     df = pd.read_sql_query("SELECT * FROM {} LIMIT 10".format(table_name), conn)
-    for ind, row in df.iterrows():
-        print(row)
+
 
 
 def get_base_directory():

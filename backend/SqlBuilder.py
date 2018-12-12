@@ -7,9 +7,9 @@ class SqlBuilder():
         self.didHitWhere = False
 
         self.baseTree = {"Get the": "SELECT ",
-                        "How many " + tableName + " entries are there where": "SELECT COUNT(*)",
-                        "What are the top": 'SELECT * FROM ' + tableName + ' ORDER BY {col} DESC',
-                        "What are the bottom": "SELECT * FROM " + tableName + " ORDER BY {col} ASC"}
+                         "How many " + tableName + " entries are there where": "SELECT COUNT(*)",
+                         "What are the top": 'SELECT * FROM ' + tableName + ' ORDER BY {col} DESC',
+                         "What are the bottom": "SELECT * FROM " + tableName + " ORDER BY {col} ASC"}
 
     def baseSQLQuery(self, choice):
         self.query += self.baseTree[choice]
@@ -18,14 +18,14 @@ class SqlBuilder():
         self.query += " LIMIT " + str(limit)
 
     def insertColumn(self, col):
-        self.query = self.query.format(col=col)
+        self.query = self.query.format(col='"'+col+'"')
 
     def addAggregate(self, aggType, column):
         aggSQL = aggType
         if aggType == "average":
             aggSQL = "avg"
 
-        self.query = "SELECT " + aggSQL + "(" + column + ")"
+        self.query = "SELECT " + aggSQL + "(" + '"'+column+'"' + ")"
 
     def hitWhere(self):
         self.didHitWhere = True
@@ -34,13 +34,13 @@ class SqlBuilder():
     def addColumn(self, col):
         if self.didHitWhere:
             col = " ".join(col.split(" ")[:-1])
-            self.query += col
+            self.query += '"'+col+'"'
         else:
             if len(col.split(" ")) == 2:
                 col = col.split(" ")[-1]
-                self.query += ", " + col
+                self.query += ", " + '"'+col+'"'
             else:
-                self.query += col
+                self.query += '"'+col+'"'
 
 
     def addColumnValue(self, val):
