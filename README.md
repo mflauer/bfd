@@ -1,4 +1,7 @@
-# bfd
+# BFD - The Big Friendly Database
+A database system designed to allow users with any range of technical
+experience to gain insights from data through the use of structured 
+natural langauage processing. 
 ## Setup
 BFD was built with Python 3.7, although it should work with any version of Python 3. 
 
