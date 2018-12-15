@@ -75,6 +75,7 @@ def query_db(sql_query, table_name, return_headers):
     directory = os.path.join(get_base_directory(), "data_files/")
     conn = sqlite3.connect(directory + table_name + ".db")
     cur = conn.cursor()
+    print(sql_query)
     results = cur.execute(sql_query).fetchall()
     if return_headers:
         desc = [tuple(header for header in headerList if header is not None) for headerList in cur.description]

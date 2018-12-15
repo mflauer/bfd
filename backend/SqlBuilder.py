@@ -34,7 +34,7 @@ class SqlBuilder():
     def addColumn(self, col):
         if self.didHitWhere:
             col = " ".join(col.split(" ")[:-1])
-            self.query += '"'+col+'"'
+            self.query += col
         else:
             if len(col.split(" ")) == 2:
                 col = col.split(" ")[-1]

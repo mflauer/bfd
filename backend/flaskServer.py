@@ -43,12 +43,14 @@ def file_saver():
         FILENAMES.append((fileLocation, fileName))
         with open(os.path.join(base_directory, os.path.join("data_files", fileLocation)), "wb") as storedFile:
             lines = file.readlines()
+            first_line = lines[0]
+            headers = first_line.decode().strip().split(",")
+            headers[0] = headers[0].replace('\ufeff', '')  # Sometimes present at start of document
             if join:
-                first_line = lines[0]
-                headers = first_line.decode().strip().split(",")
-                rename_headers = map(lambda x: x + "_" + fileName, headers)
-                joined_header = ",".join(rename_headers) + "\n"
-                lines[0] = joined_header.encode()
+                headers = map(lambda x: x + "_" + fileName, headers)
+            space_to_under = map(lambda x: x.lstrip().strip().replace(" ", "_"), headers)  # SQL doesnt play well with spaces in headers
+            joined_header = ",".join(space_to_under) + "\n"
+            lines[0] = joined_header.encode()
 
             for line in lines:
                 storedFile.write(line)
